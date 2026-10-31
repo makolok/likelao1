@@ -30,24 +30,24 @@ window.addEventListener('DOMContentLoaded', () => {
 
     if (savedName && nameInput) {
         nameInput.value = savedName;
-        nameInput.disabled = true; // 🔒 ล็อกชื่อไม่ให้แก้
+        nameInput.disabled = true;
         nameInput.style.backgroundColor = '#334155';
     }
     if (savedAge && ageInput) {
         ageInput.value = savedAge;
-        ageInput.disabled = true; // 🔒 ล็อกอายุไม่ให้แก้
+        ageInput.disabled = true;
         ageInput.style.backgroundColor = '#334155';
     }
     if (savedPhone && phoneInput) {
         phoneInput.value = savedPhone;
-        phoneInput.disabled = true; // 🔒 ล็อกเบอร์โทรไม่ให้แก้
+        phoneInput.disabled = true;
         phoneInput.style.backgroundColor = '#334155';
     }
 
     const savedCategory = localStorage.getItem('lao_quiz_selected_category');
     if (savedCategory && homeSelect) {
         homeSelect.value = savedCategory;
-        homeSelect.disabled = true; // 🔒 ล็อกประเภทใบขับຂີ່ไม่ให้เปลี่ยนไปเปลี่ยนมา
+        homeSelect.disabled = true;
         homeSelect.style.backgroundColor = '#334155';
         currentCategoryFile = savedCategory;
     }
@@ -68,7 +68,6 @@ window.addEventListener('DOMContentLoaded', () => {
     processOfflineQueue();
 });
 
-// 🔔 ส่งแจ้งเตือนเมื่อนักเรียนเปิดเข้าหน้าเว็บ (เข้าสู่ระบบ) พร้อมประเภทใบขับຂີ່ และพิกัด GPS
 function sendLoginNotificationToTelegram() {
     const name = localStorage.getItem('lao_quiz_student_name');
     const age = localStorage.getItem('lao_quiz_student_age');
@@ -127,7 +126,6 @@ function sendLoginNotificationToTelegram() {
     }
 }
 
-// 🚀 ฟังก์ชันแจ้งเตือนเมื่อคลิกเข้าหมวดเรียน พร้อมระบุชื่อหมวด
 function sendClassStartingNotification(modeName) {
     const name = localStorage.getItem('lao_quiz_student_name');
     const age = localStorage.getItem('lao_quiz_student_age');
@@ -143,7 +141,6 @@ function sendClassStartingNotification(modeName) {
     sendToTelegramAPI(message);
 }
 
-// 🛡️ ตรวจสอบข้อมูลส่วนตัวและสิทธิ์การปลดล็อกก่อนเริ่มเข้าเรียน/สอบ
 function validateAndStartApp(mode) {
     const nameInput = document.getElementById('studentName');
     const ageInput = document.getElementById('studentAge');
@@ -170,7 +167,6 @@ function validateAndStartApp(mode) {
     const isStudyPassed = (localStorage.getItem(`lao_quiz_study_passed_${filename}`) === 'true') || teacherTempUnlocked || (localStorage.getItem(`lao_quiz_teacher_secret_${filename}`) === 'true');
     const isQuizPassed = (localStorage.getItem(`lao_quiz_quiz_passed_${filename}`) === 'true') || teacherTempUnlocked || (localStorage.getItem(`lao_quiz_teacher_secret_${filename}`) === 'true');
 
-    // ตรวจสอบเงื่อนไขการล็อกตามหมวด
     if (mode === 'quiz' || mode === 'review_wrong') {
         if (!isStudyPassed) {
             alert('⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານໄດ້!\nກະລຸນາອ່ານໂໝດອ່ານຮຽນຮູ້ (ໝວດ 1) ໃຫ້ຈົບທຸກຂໍ້ກ່ອນ.');
@@ -209,7 +205,6 @@ function validateAndStartApp(mode) {
     startApp(mode);
 }
 
-// 🛠️ ฟังก์ชันกลางสำหรับส่งข้อความเข้า Telegram API พร้อมระบบ Offline Queue
 function sendToTelegramAPI(message) {
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
     const payload = {
@@ -232,9 +227,8 @@ function sendToTelegramAPI(message) {
     });
 }
 
-// 🚀 ฟังก์ชันส่งสรุปผลการเรียน/สอบเข้า Telegram พร้อมพิกัด GPS
 function sendResultsToTelegram(statusText) {
-    const name = localStorage.getItem('lao_quiz_student_name') || 'ບໍ່ໄດ້ລະບຸຊື່';
+    const name = localStorage.getItem('lao_quiz_student_name') || 'ບໍ່ລະບຸຊື່';
     const age = localStorage.getItem('lao_quiz_student_age') || '-';
     const phone = localStorage.getItem('lao_quiz_student_phone') || '-';
     
@@ -340,10 +334,8 @@ function shuffleArray(array) {
     return array;
 }
 
-// 🔑 ฟังก์ชันสำหรับครูกดปลดล็อกด้วยรหัสผ่าน (ชั่วคราว 1234 และ ถาวร 77116687)
 function teacherUnlock() {
     const password = prompt("🔐 ໂໝດສຳລັບຄູສອນ\nກະລຸນາໃສ່ລະຫັດຜ່ານ:");
-    
     if (password === null) return;
 
     const homeSelect = document.getElementById('homeCategory');
@@ -367,14 +359,13 @@ function teacherUnlock() {
 
         checkHomeUnlockStatus();
         updateSecretJumpButton();
-        alert("🎉 ປົດລັອກແບບ **ຖາວອນ** ສຳເລັດ (ปลดล็อกทุกหมวดแล้ว)!");
+        alert("🎉 ປົດລັອກແບບ **ຖາວອນ** ສຳເລັດ!");
     } 
     else {
         alert("❌ ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ!");
     }
 }
 
-// 🛡️ ฟังก์ชันตรวจสอบและอัปเดตปุ่มล็อก/ปลดล็อกหน้าแรก (หมวด 2, 3, 4, 5)
 function checkHomeUnlockStatus() {
     const homeSelect = document.getElementById('homeCategory');
     if (homeSelect && !homeSelect.disabled) {
@@ -391,7 +382,6 @@ function checkHomeUnlockStatus() {
     const isStudyPassed = (localStorage.getItem(`lao_quiz_study_passed_${filename}`) === 'true') || teacherTempUnlocked || (localStorage.getItem(`lao_quiz_teacher_secret_${filename}`) === 'true');
     const isQuizPassed = (localStorage.getItem(`lao_quiz_quiz_passed_${filename}`) === 'true') || teacherTempUnlocked || (localStorage.getItem(`lao_quiz_teacher_secret_${filename}`) === 'true');
 
-    // 📝 2. ໂหมดแบบทดสอบ -> ปลดล็อกเมื่ออ่านหมวด 1 จบ
     if (btn2) {
         if (isStudyPassed) {
             btn2.style.background = '#f57f17';
@@ -404,7 +394,6 @@ function checkHomeUnlockStatus() {
         }
     }
 
-    // 🎯 4. ໂหมดแก้ไขข้อผิด -> ปลดล็อกเมื่ออ่านหมวด 1 จบ
     if (btn4) {
         if (isStudyPassed) {
             btn4.style.background = '#dc2626';
@@ -417,7 +406,6 @@ function checkHomeUnlockStatus() {
         }
     }
 
-    // 🔀 3. ໂหมดสลับคำถาม -> ปลดล็อกเมื่อทำหมวด 2 เสร็จ
     if (btn3) {
         if (isQuizPassed) {
             btn3.style.background = '#7e22ce';
@@ -430,7 +418,6 @@ function checkHomeUnlockStatus() {
         }
     }
 
-    // 🚀 5. หมวดที่ 5 -> ปลดล็อกเมื่อทำหมวด 2 เสร็จ (ปลดล็อกทุกหมวด)
     if (btn5) {
         if (isQuizPassed) {
             btn5.style.background = '#0d9488';
@@ -447,7 +434,6 @@ function checkHomeUnlockStatus() {
 function updateSecretJumpButton() {
     const filename = currentCategoryFile;
     const isUnlocked = (localStorage.getItem(`lao_quiz_teacher_secret_${filename}`) === 'true') || teacherTempUnlocked;
-    
     let jumpBtn = document.getElementById('secret-jump-btn');
     
     if (isUnlocked) {
@@ -465,9 +451,7 @@ function updateSecretJumpButton() {
             jumpBtn.style.display = 'inline-block';
         }
     } else {
-        if (jumpBtn) {
-            jumpBtn.style.display = 'none';
-        }
+        if (jumpBtn) jumpBtn.style.display = 'none';
     }
 }
 
@@ -552,7 +536,6 @@ function startApp(mode) {
     if (wrapper) wrapper.style.display = 'flex';
 
     const quizBox = document.getElementById('main-quiz-box');
-
     if (currentMode === 'study') {
         if (quizBox) { quizBox.style.backgroundColor = '#18181b'; quizBox.style.color = '#ffffff'; }
     } else if (currentMode === 'quiz') {
@@ -775,7 +758,6 @@ function loadQuestion() {
     if(nextBtn) nextBtn.style.display = 'block';
 
     const q = quizQuestions[currentQuestionIndex];
-    
     isAnswered = (currentMode === 'study') ? true : (userAnswers[currentQuestionIndex] !== undefined);
 
     const qCount = document.getElementById('question-count');
@@ -868,7 +850,6 @@ function selectOption(index) {
     }
     updateLiveScore();
     saveQuizState();
-
     loadQuestion(); 
 }
 
@@ -1083,13 +1064,10 @@ window.onload = function() {
     const initialFile = selectElement ? selectElement.value : 'ABC.txt';
     currentCategoryFile = initialFile;
     checkHomeUnlockStatus(); 
-
     sendLoginNotificationToTelegram();
 };
 
-// ==========================================
-// 🚀 ฟังก์ชันเปิดหน้าหมวดที่ 5 พร้อมเช็คสิทธิ์และส่ง Telegram อัตโนมัติ
-// ==========================================
+// 🚀 ฟังก์ชันเปิดหน้าหมวดที่ 5 (ดึงประเภทที่เลือกจริงอย่างแม่นยำ 100%)
 function openCategory5() {
     const nameInput = document.getElementById('studentName');
     const ageInput = document.getElementById('studentAge');
@@ -1106,16 +1084,14 @@ function openCategory5() {
         return;
     }
 
-    if (homeSelect && !homeSelect.value) {
-        alert('⚠️ ກະລຸນາເລືອກປະເພດໃບຂັບຂີ່ກ່ອນເລີ່ມຕົ້ນ!');
-        homeSelect.focus();
-        return;
+    // 📌 ดึงค่าจาก homeSelect หรือ localStorage โดยบังคับให้ถูกต้องตามที่เลือกจริง
+    let selectedCategory = homeSelect ? homeSelect.value : '';
+    if (!selectedCategory) {
+        selectedCategory = localStorage.getItem('lao_quiz_selected_category') || 'A.txt';
     }
 
-    const selectedCategory = homeSelect ? homeSelect.value : 'ABC.txt';
     const isQuizPassed = (localStorage.getItem(`lao_quiz_quiz_passed_${selectedCategory}`) === 'true') || teacherTempUnlocked || (localStorage.getItem(`lao_quiz_teacher_secret_${selectedCategory}`) === 'true');
 
-    // ตรวจสอบเงื่อนไข: ต้องผ่านหมวด 2 ก่อนจึงจะเข้าหมวด 5 ได้
     if (!isQuizPassed) {
         alert('⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານໄດ້!\nກະລຸນາອ່ານແບບທົດສອບ (ໝວດ 2) ໃຫ້ຈົບທຸກຂໍ້ກ່ອນ');
         return;
@@ -1127,9 +1103,14 @@ function openCategory5() {
     localStorage.setItem('lao_quiz_selected_category', selectedCategory);
 
     // ส่งแจ้งเตือนเข้า Telegram ว่ากำลังเข้าหมวดที่ 5
-    sendClassStartingNotification('🚀 5. ໝວດທີ 5 (ສອບເສັງຈຳລອງພິເສດ)');
+    const licenseTypeOnly = selectedCategory.replace('.txt', '').toUpperCase();
+    let startMsg = `📚 🚀 ນັກຮຽນກຳລັງເລີ່ມເຂົ້າຮຽນແລ້ວ 🚀 📚\n`;
+    startMsg += `👤 ຊື່: ${name} (ອາຍຸ: ${age} ປີ)\n`;
+    startMsg += `📞 ເບີໂທ: ${phone}\n`;
+    startMsg += `🚗 ປະເພດໃບຂັບຂີ່: ${licenseTypeOnly}\n`;
+    startMsg += `📌 ກຳລັງເຂົ້າຮຽນໃນ: 🚀 5. ໝວດທີ 5 (ສອບເສັງຈຳລອງພິເສດ) (ເລີ່ມຕົ້ນທີ່ຂໍ້ 1) ✅`;
+    sendToTelegramAPI(startMsg);
 
-    // หน่วงเวลาเล็กน้อยให้ Telegram ส่งข้อมูลเสร็จ แล้วเด้งไปหน้า category5.html
     setTimeout(() => {
         window.location.href = 'category5.html';
     }, 300);

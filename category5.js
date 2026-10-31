@@ -270,7 +270,7 @@ function renderCat5Question() {
 
         optList.innerHTML += `
             <div onclick="cat5SelectOption(${idx})" style="${optStyle}">
-                <span style="color: #fbbf24; margin-right: 10px; font-size: 1.25rem;">${letters[idx]}.</span>
+                <span style="color: #ffffff; margin-right: 10px; font-size: 1.25rem;">${letters[idx]}.</span>
                 <span>${opt}</span>
             </div>
         `;

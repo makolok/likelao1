@@ -16,7 +16,6 @@
             font-family: 'Phetsarath', sans-serif !important;
         }
 
-        /* 🚗 สไตล์หลักสำหรับหน้าจอคอมพิวเตอร์และทั่วไป */
         #cat5-body {
             margin: 0;
             padding: 0;
@@ -54,7 +53,6 @@
             margin-bottom: 10px;
         }
 
-        /* คอลัมน์ซ้าย: ตารางข้อสอบ */
         .cat5-sidebar-panel {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -73,7 +71,6 @@
             padding-right: 4px;
         }
 
-        /* คอลัมน์กลาง: คำถามและตัวเลือก */
         .cat5-main-content {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -85,9 +82,10 @@
         }
 
         .cat5-q-title {
-            font-size: 1.15rem;
+            font-size: 1.4rem !important;
             font-weight: bold;
             margin-bottom: 10px;
+            line-height: 1.4;
         }
 
         .cat5-img-box {
@@ -99,43 +97,41 @@
             align-items: center;
         }
 
-        /* 💻 บังคับขยายรูปภาพคำถามให้ใหญ่สะใจเต็มตาบนคอมพิวเตอร์ (Desktop) */
         .cat5-img-box img {
-            max-height: 450px !important; /* เพิ่มความสูงขึ้นจากเดิม */
-            width: auto !important;
-            max-width: 100% !important;
+            width: 100% !important;
+            max-width: 550px !important;
+            height: auto !important;
             object-fit: contain;
             border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(0, 0, 0, 0.2);
-            padding: 5px;
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px;
         }
 
         .cat5-options-box {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
             margin-top: 10px;
         }
 
-        /* 🔒 ล็อกขนาดกล่องตัวเลือก ก, ข, ค, ง ให้เท่ากันทุกกล่อง */
         .cat5-options-box > div {
             width: 100%;
-            min-height: 50px;
+            min-height: 60px;
             box-sizing: border-box;
             display: flex;
             align-items: center;
-            padding: 10px 14px;
-            border-radius: 8px;
+            padding: 12px 18px;
+            border-radius: 10px;
             background: rgba(255, 255, 255, 0.08);
-            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.25);
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.45rem !important;
             font-weight: bold;
             color: #ffffff;
+            line-height: 1.4;
         }
 
-        /* คอลัมน์ขวา: กล้องและแกลเลอรี */
         .cat5-right-panel {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -173,7 +169,6 @@
             border-radius: 4px;
         }
 
-        /* แถบปุ่มควบคุมด้านล่าง */
         .cat5-bottom-bar {
             display: flex;
             justify-content: center;
@@ -192,7 +187,6 @@
             padding: 0;
         }
 
-        /* 📱 ระบบ Responsive สำหรับมือถือ */
         @media screen and (max-width: 768px) {
             .cat5-container {
                 width: 100vw;
@@ -203,9 +197,20 @@
             }
 
             .cat5-top-header {
-                padding: 3px 6px;
+                padding: 4px 6px;
                 margin-bottom: 2px;
-                font-size: 0.7rem;
+                font-size: 0.75rem;
+                display: flex;
+                flex-direction: row !important;
+                justify-content: space-between;
+                align-items: center;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+
+            .cat5-top-header span {
+                text-overflow: ellipsis;
+                overflow: hidden;
             }
 
             .cat5-exam-grid {
@@ -236,8 +241,8 @@
             }
             .cat5-grid-box button {
                 padding: 1px 0 !important;
-                font-size: 0.45rem !important;
-                min-height: 16px;
+                font-size: 0.55rem !important;
+                min-height: 18px;
                 width: 100%;
             }
 
@@ -246,14 +251,16 @@
                 padding: 6px !important;
                 overflow-y: auto;
             }
+            
             .cat5-q-title {
-                font-size: 0.8rem;
-                margin-bottom: 4px;
+                font-size: 1.15rem !important;
+                margin-bottom: 6px;
             }
+            
             .cat5-options-box > div {
-                min-height: 38px;
-                padding: 4px 6px;
-                font-size: 0.75rem;
+                min-height: 48px;
+                padding: 8px 10px;
+                font-size: 1.15rem !important;
             }
 
             .cat5-right-panel {
@@ -300,9 +307,11 @@
                 object-fit: fill !important;
             }
             
-            /* 📱 ล็อกขนาดรูปบนมือถือให้พอดีจอ ไม่ให้ล้น */
             .cat5-img-box img {
-                max-height: 130px !important;
+                width: 100% !important;
+                max-height: 250px !important;
+                object-fit: contain !important;
+                border-radius: 6px;
             }
         }
     </style>
@@ -311,30 +320,25 @@
 
     <div class="cat5-container">
         
-        <!-- 🚗 หัวข้อด้านบน -->
         <div class="cat5-top-header">
-            <span style="font-size: 0.95rem; font-weight: bold; color: #ffffff;">ສອບເສັງໃບຂັບຂີ່ ພາກທິດສະດີ (ໝວດທີ 5)</span>
-            <span id="cat5-category-badge" style="font-size: 0.8rem; color: #fbbf24; font-weight: bold;">ປະເພດ: ABC</span>
+            <span id="cat5-progress-text" style="font-size: 0.85rem; font-weight: bold; color: #ffffff;">ທົດສອບເສັງໃບຂັບຂີ່ (ຄຳຖາມທີ 1 ຮອດ 20)</span>
+            <span id="cat5-bank-header-badge" style="font-size: 0.8rem; color: #fbbf24; font-weight: bold; margin-left: 8px;">[ເຫຼືຢູ່ໃນລະບົບ: 0]</span>
         </div>
 
-        <!-- 📐 ส่วนกลาง: 3 คอลัมน์ -->
         <div class="cat5-exam-grid">
             
-            <!-- 1. คอลัมน์ซ้าย: ตารางข้อสอบ -->
             <div class="cat5-sidebar-panel">
                 <div style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold; margin-bottom: 4px; text-align: center;">ລາຍຊື່ຂໍ້ສອບ</div>
                 <div id="cat5-grid-container" class="cat5-grid-box"></div>
                 <div id="cat5-answered-text" style="font-size: 0.7rem; color: #ffffff; text-align: center; margin-top: 4px; font-weight: bold;">ຕອບແລ້ວ 0 ຂໍ້</div>
             </div>
 
-            <!-- 2. คอลัมน์กลาง: คำถาม รูปภาพ และตัวเลือกข้อความ -->
             <div class="cat5-main-content">
                 <div id="cat5-question-text" class="cat5-q-title">ກຳລັງໂຫຼດຂໍ້ສອບ...</div>
                 <div id="cat5-image-container" class="cat5-img-box"></div>
                 <div id="cat5-options-list" class="cat5-options-box"></div>
             </div>
 
-            <!-- 3. คอลัมน์ขวา: กล้องถ่ายรูป + ตารางรูปถ่ายสะสมเรียงลงมา 5 คอลัมน์ + เวลานับถอยหลัง -->
             <div class="cat5-right-panel">
                 <div class="cat5-camera-box">
                     <video id="cat5-webcam-video" autoplay playsinline webkit-playsinline muted style="width: 100%; height: 100%; object-fit: cover;"></video>
@@ -342,25 +346,19 @@
                     <div style="position: absolute; bottom: 2px; left: 2px; background: rgba(0,0,0,0.6); color: #22c55e; font-size: 0.55rem; padding: 1px 3px; font-weight: bold;">LIVE 🔴</div>
                 </div>
                 
-                <!-- ตารางรูปถ่ายนักเรียนสะสมเรียงลงมาทางขวา -->
                 <div id="cat5-snapshots-gallery" class="cat5-mini-gallery"></div>
 
-                <!-- เวลานับถอยหลัง -->
                 <div class="cat5-timer-box">
-                    <div style="font-size: 0.65rem; color: #cbd5e1;">ເວລາຄົງเหลือ</div>
+                    <div style="font-size: 0.65rem; color: #cbd5e1;">ເວລາເຫຼືອ</div>
                     <div id="cat5-timer" style="font-size: 1.1rem; color: #ef4444; font-weight: bold;">24:56</div>
                 </div>
             </div>
 
         </div>
 
-        <!-- 🔘 แถบปุ่มควบคุมด้านล่าง -->
         <div class="cat5-bottom-bar">
-            <button id="cat5-submit-btn" onclick="cat5SubmitExam()" class="cat5-img-btn" title="ส่งข้อสอบ" style="display: none; background: none; border: none; cursor: pointer; padding: 0;">
-                <img src="send.png" alt="ສົ່ງ" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'65\' height=\'52\' viewBox=\'0 0 65 52\'><rect width=\'100%\' height=\'100%\' fill=\'%2315803d\' rx=\'6\'/><text x=\'50%\' y=\'54%\' fill=\'white\' font-size=\'15\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ສົ່ງ</text></svg>';" style="width: 100%; max-width: 75px; height: 68px; object-fit: contain;">
-            </button>			
-            <button onclick="cat5PrevQuestion()" class="cat5-img-btn" title="กลับข้อก่อนหน้า">
-                <img src="back.png" alt="ກັບ" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'45\'><rect width=\'100%\' height=\'100%\' fill=\'%23dc2626\' rx=\'6\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'13\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ກັບ</text></svg>'">
+            <button onclick="cat5PrevOrSubmit()" id="cat5-back-submit-btn" class="cat5-img-btn" title="กลับ / ส่งຂໍ້สอบ">
+                <img id="cat5-back-submit-img" src="back.png" alt="ກັບ" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'45\'><rect width=\'100%\' height=\'100%\' fill=\'%23dc2626\' rx=\'6\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'13\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ກັບ</text></svg>'">
             </button>
             <button onclick="cat5SelectOption(0)" class="cat5-img-btn" title="เลือก ก">
                 <img src="a.png" alt="ກ" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'55\' height=\'45\'><circle cx=\'27\' cy=\'22\' r=\'20\' fill=\'%23dc2626\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'14\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ກ</text></svg>'">
@@ -374,72 +372,88 @@
             <button onclick="cat5SelectOption(3)" class="cat5-img-btn" title="เลือก ง">
                 <img src="d.png" alt="ງ" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'55\' height=\'45\'><circle cx=\'27\' cy=\'22\' r=\'20\' fill=\'%23dc2626\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'14\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ງ</text></svg>'">
             </button>
-            <button onclick="cat5NextQuestion()" class="cat5-img-btn" title="ข้อถัดไป / ข้าม">
+            <button onclick="cat5NextQuestion()" class="cat5-img-btn" title="ຂໍ້ถัดไป / ข้าม">
                 <img src="next.png" alt="ຂ້າມ" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'45\'><rect width=\'100%\' height=\'100%\' fill=\'%230284c7\' rx=\'6\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'13\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ຂ້າມ</text></svg>'">
             </button>
         </div>
 
-        <!-- 📊 หน้าสรุปผลหมวดที่ 5 -->
-        <div id="cat5-result-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #0f172a; text-align: center; padding: 20px; color: white; flex-direction: column; justify-content: center; align-items: center; box-sizing: border-box; z-index: 9999;">
-            <div style="max-width: 600px; width: 100%; margin: auto; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <h2 style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">ສອບເສັງໃບຂັບຂີ່ ພາກທິດສະດີ (ໝວດທີ 5)</h2>
-                <div id="cat5-result-summary" style="font-size: 1.1rem; margin-bottom: 10px; font-weight: bold;">ຕອບຜິດ 0 ຂໍ້</div>
+        <div id="cat5-result-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #0f172a; text-align: center; padding: 20px; color: white; flex-direction: row; justify-content: center; align-items: center; box-sizing: border-box; z-index: 9999; gap: 30px;">
+            
+            <div style="max-width: 550px; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <h2 style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;" id="cat5-result-main-title">ສອບເສັງໃບຂັບຂີ່ ພາກທິດສະດີ (ໝວດທີ 5 - ສະລຸບຊຸດນ້ອຍ)</h2>
+                <div id="cat5-result-summary" style="font-size: 1.1rem; margin-bottom: 10px; font-weight: bold;">ຕອບຖືກ: 0 | ຕອບຜຶດ: 0</div>
                 <div id="cat5-status-badge" style="font-size: 2.5rem; font-weight: bold; color: #22c55e; margin: 12px 0;">ຜ່ານ</div>
-                <div style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 6px;">ເຊີນผู้สอนเส็งອອກລຳຄຳได้</div>
-                <div style="font-size: 0.85rem; color: #fbbf24; font-weight: bold; margin-bottom: 24px;">RESULT CODE: QTBV</div>
+                <div style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 6px;" id="cat5-result-subtext">ກົດປູນລຸ່ມນີ້</div>
+                <div style="font-size: 0.85rem; color: #fbbf24; font-weight: bold; margin-bottom: 24px;">ໄປເລີ່ມຕົ້ນ</div>
                 <div style="display: flex; flex-direction: column; gap: 10px; max-width: 400px; width: 100%;">
-                    <button onclick="cat5RestartExam()" style="padding: 12px; background: #0284c7; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; font-size: 0.95rem;">
-                        🔄 ສອບເສັງໝວດ 5 ໃໝ່ (Random ชุดใหม่)
+                    <button id="cat5-next-batch-btn" onclick="cat5ProceedNextBatch()" style="padding: 12px; background: #0284c7; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; font-size: 0.95rem;">
+                        🔄 ทำຂໍ້สอบชุดถัดไป (ລົບອອກ)
                     </button>
                     <button onclick="window.location.href='index.html'" style="padding: 12px; background: #475569; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; font-size: 0.95rem;">
                         🏠 ກຼັບຄືນໜ້າທຳອິດ
                     </button>
                 </div>
             </div>
-            <div style="position: absolute; bottom: 70px; right: 25px; width: 130px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 4px;">
-                <div id="cat5-result-gallery" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; max-height: 180px; overflow-y: auto; align-content: start;"></div>
+
+            <div style="width: 130px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 6px; max-height: 380px; display: flex; flex-direction: column;">
+                <div style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold; margin-bottom: 6px; text-align: center;">ຮູບຖ່າຍສອບເສັງ</div>
+                <div id="cat5-result-gallery" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; overflow-y: auto; align-content: start; max-height: 330px;"></div>
             </div>
+
         </div>
 
     </div>
 
-    <!-- ส่วนสคริปต์การทำงานของข้อสอบ -->
+    <!-- 🤖 Telegram API Config -->
+    <script>
+        const TELEGRAM_BOT_TOKEN = '8235688305:AAGUwsZaWzJJn7keTauBLpbUcUYP5eRuv_A';
+        const TELEGRAM_CHAT_ID = '-5193551029';
+
+        function sendTelegramNotification(message) {
+            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+            const payload = {
+                chat_id: TELEGRAM_CHAT_ID,
+                text: message,
+                parse_mode: 'Markdown'
+            };
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(e => console.log("Telegram error:", e));
+        }
+    </script>
+
     <script>
         let cat5Questions = [];
         let cat5Index = 0;
         let cat5Answers = {};
         let cat5Snapshots = {};
-
-        let cat5Config = {
-            total: 33,
-            maxWrong: 4,
-            categoryName: 'ABC',
-            fileName: 'ABC.txt'
-        };
+        let cat5Config = { total: 20, categoryName: 'A', fileName: 'A.txt' };
 
         window.addEventListener('DOMContentLoaded', () => {
-            const savedCat = localStorage.getItem('lao_quiz_selected_category') || 'ABC.txt';
+            const savedCat = localStorage.getItem('lao_quiz_selected_category') || 'A.txt';
             setCat5Rules(savedCat);
             initCat5Webcam();
-            loadCat5Questions();
+            initOrResumeBank();
+            // 🔕 ปิดการส่งแจ้งเตือนตอนเข้าหมวด 5 หรือจบรอบย่อย (ตามความต้องการของคุณ)
         });
 
         function setCat5Rules(filename) {
             cat5Config.fileName = filename;
-            const upper = filename.toUpperCase();
-            if (upper.includes('ABC')) {
-                cat5Config = { total: 33, maxWrong: 4, categoryName: 'ABC', fileName: filename };
-            } else if (upper.includes('AB')) {
-                cat5Config = { total: 28, maxWrong: 4, categoryName: 'AB', fileName: filename };
-            } else if (upper.includes('B')) {
-                cat5Config = { total: 25, maxWrong: 3, categoryName: 'B', fileName: filename };
-            } else if (upper.includes('C') || upper.includes('D') || upper.includes('CDBC')) {
-                cat5Config = { total: 30, maxWrong: 3, categoryName: 'C / D / BC', fileName: filename };
+            const upper = filename.toUpperCase().trim();
+            
+            if (upper === 'ABC.TXT' || upper === 'ABC') {
+                cat5Config = { total: 33, categoryName: 'ABC', fileName: filename };
+            } else if (upper === 'AB.TXT' || upper === 'AB') {
+                cat5Config = { total: 28, categoryName: 'AB', fileName: filename };
+            } else if (upper === 'B.TXT' || upper === 'B') {
+                cat5Config = { total: 25, categoryName: 'B', fileName: filename };
+            } else if (upper.includes('CDBC') || upper.includes('C') || upper.includes('D')) {
+                cat5Config = { total: 30, categoryName: 'C / D / BC', fileName: filename };
             } else {
-                cat5Config = { total: 20, maxWrong: 3, categoryName: 'A', fileName: filename };
+                cat5Config = { total: 20, categoryName: 'A', fileName: filename };
             }
-            const badge = document.getElementById('cat5-category-badge');
-            if (badge) badge.innerText = `ປະເພດ: ${cat5Config.categoryName} (${cat5Config.total} ข้อ)`;
         }
 
         function initCat5Webcam() {
@@ -455,63 +469,67 @@
             }
         }
 
-        function captureCat5Snapshot(qNum) {
-            const video = document.getElementById('cat5-webcam-video');
-            const canvas = document.getElementById('cat5-snapshot-canvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            canvas.width = 160;
-            canvas.height = 120;
-            let dataURL = null;
-            if (video && video.readyState === video.HAVE_ENOUGH_DATA && video.videoWidth > 0) {
-                try {
-                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    dataURL = canvas.toDataURL('image/png');
-                } catch (e) { console.log(e); }
-            }
-            if (!dataURL) {
-                ctx.fillStyle = '#1e293b';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 12px sans-serif';
-                ctx.fillText(`Q ${qNum}`, 40, 60);
-                dataURL = canvas.toDataURL('image/png');
-            }
-            cat5Snapshots[qNum] = dataURL;
-            renderCat5MiniGallery();
-        }
-
-        function renderCat5MiniGallery() {
-            const gallery = document.getElementById('cat5-snapshots-gallery');
-            if (!gallery) return;
-            gallery.innerHTML = '';
-            Object.keys(cat5Snapshots).forEach(qNum => {
-                gallery.innerHTML += `
-                    <div style="background: rgba(255,255,255,0.05); border-radius: 4px; padding: 1px; text-align: center;">
-                        <img src="${cat5Snapshots[qNum]}" style="width: 100%; height: 26px; object-fit: cover; border-radius: 2px;">
-                    </div>
-                `;
-            });
-        }
-
-        async function loadCat5Questions() {
+        async function initOrResumeBank() {
             try {
-                const response = await fetch(cat5Config.fileName);
-                if (!response.ok) throw new Error('ไม่พบไฟล์ข้อสอบ');
-                const textData = await response.text();
-                let allParsed = parseCsvInsideTxt(textData);
-                shuffleArray(allParsed);
-                cat5Questions = allParsed.slice(0, cat5Config.total);
-                cat5Index = 0;
-                cat5Answers = {};
-                cat5Snapshots = {};
-                const gallery = document.getElementById('cat5-snapshots-gallery');
-                if (gallery) gallery.innerHTML = '';
+                let masterBankKey = 'cat5_master_bank_' + cat5Config.fileName;
+                let currentBatchKey = 'cat5_current_batch_' + cat5Config.fileName;
+                
+                let masterBank = JSON.parse(localStorage.getItem(masterBankKey));
+                
+                if (!masterBank || masterBank.length === 0) {
+                    const response = await fetch(cat5Config.fileName);
+                    if (!response.ok) throw new Error('ไม่พบไฟล์ຂໍ້สอบ');
+                    const textData = await response.text();
+                    masterBank = parseCsvInsideTxt(textData);
+                    shuffleArray(masterBank);
+                    localStorage.setItem(masterBankKey, JSON.stringify(masterBank));
+                }
+
+                let currentBatch = JSON.parse(localStorage.getItem(currentBatchKey));
+                
+                if (!currentBatch || currentBatch.length === 0) {
+                    if (masterBank.length === 0) {
+                        showFinalCompleteScreen();
+                        return;
+                    }
+                    
+                    let takeCount = Math.min(cat5Config.total, masterBank.length);
+                    currentBatch = masterBank.splice(0, takeCount);
+                    
+                    localStorage.setItem(masterBankKey, JSON.stringify(masterBank));
+                    localStorage.setItem(currentBatchKey, JSON.stringify(currentBatch));
+                    localStorage.removeItem('cat5_answers_' + cat5Config.fileName);
+                    localStorage.removeItem('cat5_index_' + cat5Config.fileName);
+                }
+
+                cat5Questions = currentBatch;
+                
+                const savedAnswers = localStorage.getItem('cat5_answers_' + cat5Config.fileName);
+                const savedIndex = localStorage.getItem('cat5_index_' + cat5Config.fileName);
+                if (savedAnswers) cat5Answers = JSON.parse(savedAnswers);
+                if (savedIndex) cat5Index = parseInt(savedIndex) || 0;
+
+                updateHeaderBadge();
                 renderCat5Question();
+
             } catch (e) {
                 console.error(e);
-                document.getElementById('cat5-question-text').innerText = 'เกิดข้อผิดพลาดในการโหลดไฟล์ข้อสอบ (' + cat5Config.fileName + ')';
+                document.getElementById('cat5-question-text').innerText = 'เกิดຂໍ້ผิดพลาดในการโหลดไฟล์ຂໍ້สอบ (' + cat5Config.fileName + ')';
             }
+        }
+
+        function updateHeaderBadge() {
+            let masterBank = JSON.parse(localStorage.getItem('cat5_master_bank_' + cat5Config.fileName) || '[]');
+            let totalRemainingInSystem = masterBank.length + cat5Questions.length;
+            const badge = document.getElementById('cat5-bank-header-badge');
+            if (badge) {
+                badge.innerText = `[คลังเหลือในระบบ: ${totalRemainingInSystem}]`;
+            }
+        }
+
+        function saveProgressToStorage() {
+            localStorage.setItem('cat5_answers_' + cat5Config.fileName, JSON.stringify(cat5Answers));
+            localStorage.setItem('cat5_index_' + cat5Config.fileName, cat5Index);
         }
 
         function parseCsvInsideTxt(text) {
@@ -576,15 +594,65 @@
             return array;
         }
 
+        function captureCat5Snapshot(qNum) {
+            const video = document.getElementById('cat5-webcam-video');
+            const canvas = document.getElementById('cat5-snapshot-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = 160;
+            canvas.height = 120;
+            let dataURL = null;
+            if (video && video.readyState === video.HAVE_ENOUGH_DATA && video.videoWidth > 0) {
+                try {
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    dataURL = canvas.toDataURL('image/png');
+                } catch (e) { console.log(e); }
+            }
+            if (!dataURL) {
+                ctx.fillStyle = '#1e293b';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 12px sans-serif';
+                ctx.fillText(`Q ${qNum}`, 40, 60);
+                dataURL = canvas.toDataURL('image/png');
+            }
+            cat5Snapshots[qNum] = dataURL;
+            renderCat5MiniGallery();
+        }
+
+        function renderCat5MiniGallery() {
+            const gallery = document.getElementById('cat5-snapshots-gallery');
+            if (!gallery) return;
+            gallery.innerHTML = '';
+            Object.keys(cat5Snapshots).forEach(qNum => {
+                gallery.innerHTML += `
+                    <div style="background: rgba(255,255,255,0.05); border-radius: 4px; padding: 1px; text-align: center;">
+                        <img src="${cat5Snapshots[qNum]}" style="width: 100%; height: 26px; object-fit: cover; border-radius: 2px;">
+                    </div>
+                `;
+            });
+        }
+
         function renderCat5SidebarGrid() {
             const container = document.getElementById('cat5-grid-container');
             if (!container) return;
             container.innerHTML = '';
+            
+            const laoLetters = ['ກ', 'ຂ', 'ຄ', 'ງ'];
+
             cat5Questions.forEach((_, idx) => {
                 const btn = document.createElement('button');
                 btn.className = 'cat5-grid-btn';
-                btn.innerText = (idx + 1);
+                
+                if (cat5Answers[idx] !== undefined) {
+                    const ansIdx = cat5Answers[idx];
+                    btn.innerText = laoLetters[ansIdx] || (idx + 1);
+                } else {
+                    btn.innerText = (idx + 1);
+                }
+
                 btn.style.cssText = "padding: 6px; font-weight: bold; font-size: 0.85rem; border-radius: 4px; border: 1px solid #475569; cursor: pointer; background: #ffffff; color: #0f172a; text-align: center;";
+                
                 if (idx === cat5Index) {
                     btn.style.backgroundColor = '#fef08a';
                     btn.style.color = '#000000';
@@ -593,30 +661,60 @@
                     btn.style.backgroundColor = '#22c55e';
                     btn.style.color = '#ffffff';
                 }
+
                 btn.onclick = () => {
                     cat5Index = idx;
+                    saveProgressToStorage();
                     renderCat5Question();
                 };
                 container.appendChild(btn);
             });
+            
             const answeredCount = Object.keys(cat5Answers).length;
             document.getElementById('cat5-answered-text').innerText = `ຕອບແລ້ວ ${answeredCount} ຈາກ ${cat5Questions.length} ຂໍ້`;
-            updateSubmitButtonVisibility();
+            updateBackSubmitButtonState();
         }
 
-        function updateSubmitButtonVisibility() {
+        function updateBackSubmitButtonState() {
             const answeredCount = Object.keys(cat5Answers).length;
-            const submitBtn = document.getElementById('cat5-submit-btn');
-            if (!submitBtn) return;
-            if (answeredCount >= cat5Questions.length) {
-                submitBtn.style.display = 'flex';
+            const isCompleted = answeredCount >= cat5Questions.length;
+            const btnImg = document.getElementById('cat5-back-submit-img');
+            if (!btnImg) return;
+
+            if (isCompleted) {
+                btnImg.src = 'send.png';
+                btnImg.onerror = function() {
+                    this.onerror = null;
+                    this.src = 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'45\'><rect width=\'100%\' height=\'100%\' fill=\'%2315803d\' rx=\'6\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'13\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ສົ່ງ</text></svg>';
+                };
             } else {
-                submitBtn.style.display = 'none';
+                btnImg.src = 'back.png';
+                btnImg.onerror = function() {
+                    this.onerror = null;
+                    this.src = 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'45\'><rect width=\'100%\' height=\'100%\' fill=\'%23dc2626\' rx=\'6\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'13\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ກັບ</text></svg>';
+                };
+            }
+        }
+
+        function cat5PrevOrSubmit() {
+            const answeredCount = Object.keys(cat5Answers).length;
+            const isCompleted = answeredCount >= cat5Questions.length;
+
+            if (isCompleted) {
+                cat5SubmitExam();
+            } else {
+                cat5PrevQuestion();
             }
         }
 
         function renderCat5Question() {
             if (cat5Questions.length === 0) return;
+            
+            const progressEl = document.getElementById('cat5-progress-text');
+            if (progressEl) {
+                progressEl.innerText = `ທົດສອບເສັງໃບຂັບຂີ່ (ຄຳຖາມທີ ${cat5Index + 1} จาก ${cat5Questions.length})`;
+            }
+
             const q = cat5Questions[cat5Index];
             document.getElementById('cat5-question-text').innerText = `ຂໍ້ທີ ${cat5Index + 1}: ${q.question}`;
             
@@ -629,32 +727,35 @@
             const userAns = cat5Answers[cat5Index];
 
             q.options.forEach((opt, idx) => {
-                let optStyle = "display: flex; align-items: center; padding: 12px 14px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; font-size: 1.1rem; font-weight: bold; color: #ffffff; background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.2);";
+                let optStyle = "display: flex; align-items: center; padding: 14px 18px; border-radius: 10px; margin-bottom: 10px; cursor: pointer; font-size: 1.45rem; font-weight: bold; color: #ffffff; background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.25);";
                 if (userAns !== undefined) {
                     if (idx === q.answer) {
-                        optStyle = "display: flex; align-items: center; padding: 12px 14px; border-radius: 8px; margin-bottom: 8px; font-size: 1.1rem; font-weight: bold; color: #ffffff; background-color: #16a34a !important; border: 1.5px solid #22c55e !important;";
+                        optStyle = "display: flex; align-items: center; padding: 14px 18px; border-radius: 10px; margin-bottom: 10px; font-size: 1.45rem; font-weight: bold; color: #ffffff; background-color: #16a34a !important; border: 2px solid #22c55e !important;";
                     } else if (idx === userAns) {
-                        optStyle = "display: flex; align-items: center; padding: 12px 14px; border-radius: 8px; margin-bottom: 8px; font-size: 1.1rem; font-weight: bold; color: #ffffff; background-color: #dc2626 !important; border: 1.5px solid #ef4444 !important;";
+                        optStyle = "display: flex; align-items: center; padding: 14px 18px; border-radius: 10px; margin-bottom: 10px; font-size: 1.45rem; font-weight: bold; color: #ffffff; background-color: #dc2626 !important; border: 2px solid #ef4444 !important;";
                     }
                 }
                 optList.innerHTML += `
                     <div onclick="cat5SelectOption(${idx})" style="${optStyle}">
-                        <span style="color: #fbbf24; margin-right: 10px; font-size: 1.25rem;">${letters[idx]}.</span>
+                        <span style="color: #ffffff; margin-right: 12px; font-size: 1.55rem;">${letters[idx]}.</span>
                         <span>${opt}</span>
                     </div>
                 `;
             });
             renderCat5SidebarGrid();
+            updateHeaderBadge();
         }
 
         function cat5SelectOption(optIdx) {
             if (cat5Answers[cat5Index] !== undefined) return;
             cat5Answers[cat5Index] = optIdx;
             captureCat5Snapshot(cat5Index + 1);
+            saveProgressToStorage();
             renderCat5Question();
             setTimeout(() => {
                 if (cat5Index < cat5Questions.length - 1) {
                     cat5Index++;
+                    saveProgressToStorage();
                     renderCat5Question();
                 }
             }, 400);
@@ -663,6 +764,7 @@
         function cat5PrevQuestion() {
             if (cat5Index > 0) {
                 cat5Index--;
+                saveProgressToStorage();
                 renderCat5Question();
             }
         }
@@ -670,27 +772,48 @@
         function cat5NextQuestion() {
             if (cat5Index < cat5Questions.length - 1) {
                 cat5Index++;
+                saveProgressToStorage();
                 renderCat5Question();
             }
         }
 
         function cat5SubmitExam() {
-            cat5EvaluateAndShowResults();
-        }
-
-        function cat5EvaluateAndShowResults() {
             let wrongCount = 0;
+            let correctCount = 0;
             let wrongList = [];
+
             cat5Questions.forEach((q, idx) => {
                 const userAns = cat5Answers[idx];
-                if (userAns !== q.answer) {
+                if (userAns === q.answer) {
+                    correctCount++;
+                } else {
                     wrongCount++;
                     wrongList.push(q);
                 }
             });
-            const isPassed = wrongCount <= cat5Config.maxWrong;
-            localStorage.setItem('lao_quiz_wrong_' + cat5Config.fileName, JSON.stringify(wrongList));
-            
+
+            let existingWrong = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + cat5Config.fileName) || '[]');
+            wrongList.push(...existingWrong.filter(ew => !wrongList.some(w => w.question === ew.question)));
+            localStorage.setItem('lao_quiz_wrong_' + cat5Config.fileName, JSON.stringify(existingWrong));
+
+            let batchHistory = JSON.parse(localStorage.getItem('cat5_history_' + cat5Config.fileName) || '[]');
+            batchHistory.push({ wrong: wrongCount, correct: correctCount, total: cat5Questions.length });
+            localStorage.setItem('cat5_history_' + cat5Config.fileName, JSON.stringify(batchHistory));
+
+            let masterBank = JSON.parse(localStorage.getItem('cat5_master_bank_' + cat5Config.fileName) || '[]');
+
+            localStorage.removeItem('cat5_current_batch_' + cat5Config.fileName);
+            localStorage.removeItem('cat5_answers_' + cat5Config.fileName);
+            localStorage.removeItem('cat5_index_' + cat5Config.fileName);
+
+            if (masterBank.length === 0) {
+                showFinalCompleteScreen(); // 🚀 ส่ง Telegram เฉพาะตอนจบภาพรวมทั้งหมดตรงนี้
+            } else {
+                showBatchSummaryScreen(correctCount, wrongCount, masterBank.length); // 🔕 ไม่ส่ง Telegram ตอนจบรอบย่อย
+            }
+        }
+
+        function showBatchSummaryScreen(correct, wrong, remainingMaster) {
             const examGrid = document.querySelector('.cat5-exam-grid');
             const topHeader = document.querySelector('.cat5-top-header');
             const bottomBar = document.querySelector('.cat5-bottom-bar');
@@ -700,11 +823,86 @@
             
             const resultScreen = document.getElementById('cat5-result-screen');
             if (resultScreen) resultScreen.style.display = 'flex';
-            document.getElementById('cat5-result-summary').innerText = `ຕອບຜິດ ${wrongCount} ຂໍ້ ในທັງໝົດ ${cat5Questions.length} ຂໍ້`;
+
+            document.getElementById('cat5-result-main-title').innerText = `ສອບເສັງໃບຂັບຂີ່ ພາກທິດສະດີ (${cat5Config.categoryName} - ສະລຸບຊຸດນ້ອຍ)`;
+            document.getElementById('cat5-result-summary').innerText = `ຕອບຖືກ: ${correct} | ຕອບຜຶດ: ${wrong} (ຄຳຖາມຍັງ ${remainingMaster} ຂໍ້)`;
+            
+            let isBatchPassed = wrong <= 5;
+            const badge = document.getElementById('cat5-status-badge');
+            badge.innerText = isBatchPassed ? 'ຜ່ານ' : 'ຕົກ';
+            badge.style.color = isBatchPassed ? '#22c55e' : '#ef4444';
+            
+            document.getElementById('cat5-result-subtext').innerText = `ອ່ານຊຸດນີ້ແລ້ວ! ກົດປຸມໄປອ່ານຊຸດໃໝ່`;
+
+            const nextBtn = document.getElementById('cat5-next-batch-btn');
+            if (nextBtn) {
+                nextBtn.innerText = '🔄 ອ່ານຂໍ້ເສັງຖັດໄປ (ລົບອອກ)';
+                nextBtn.onclick = () => { window.location.reload(); };
+            }
+
+            renderCat5ResultGallery();
+        }
+
+        function showFinalCompleteScreen() {
+            let batchHistory = JSON.parse(localStorage.getItem('cat5_history_' + cat5Config.fileName) || '[]');
+            let totalWrong = 0;
+            let totalCorrect = 0;
+            let totalQuestions = 0;
+
+            batchHistory.forEach(b => {
+                totalWrong += b.wrong;
+                totalCorrect += b.correct;
+                totalQuestions += b.total;
+            });
+
+            let isPassed = totalWrong <= 10;
+
+            // 🚀 **ส่งสรุปผลภาพรวมทั้งหมดเข้า Telegram ที่นี่ที่เดียว**
+            const sName = localStorage.getItem('lao_quiz_student_name') || 'ບໍ່ລະບຸຊື່';
+            const sAge = localStorage.getItem('lao_quiz_student_age') || '-';
+            const sPhone = localStorage.getItem('lao_quiz_student_phone') || '-';
+            
+            let tgMsg = `🚨 **ຜົນການສອບເສັງຈຳລອງ ໝວດທີ 5 ** 🚨\n` +
+                        `👤 ຊື່: ${sName} (ອາຍຸ: ${sAge} ປີ)\n` +
+                        `📞 ເບີໂທ: ${sPhone}\n` +
+                        `📋 ປະເພດໃບຂັບຂີ່: ${cat5Config.categoryName}\n` +
+                        `📊 คะแนนรวม: ຖືກ ${totalCorrect} | ຜິດ ${totalWrong} (ຈາກທັງໝົດ ${totalQuestions} ຂໍ້)\n` +
+                        `🏆 ສະຖານະ: ${isPassed ? 'ຜ່ານ ✅ (ຜິດລວມບໍ່ເກີນ 10 ຂໍ້)' : 'ຕົກ ❌ (ຜິດລວມເກີນ 10 ຂໍ້)'}`;
+
+            sendTelegramNotification(tgMsg);
+
+            const examGrid = document.querySelector('.cat5-exam-grid');
+            const topHeader = document.querySelector('.cat5-top-header');
+            const bottomBar = document.querySelector('.cat5-bottom-bar');
+            if (examGrid) examGrid.style.display = 'none';
+            if (topHeader) topHeader.style.display = 'none';
+            if (bottomBar) bottomBar.style.display = 'none';
+            
+            const resultScreen = document.getElementById('cat5-result-screen');
+            if (resultScreen) resultScreen.style.display = 'flex';
+            
+            document.getElementById('cat5-result-main-title').innerText = `ສອບເສັງໃບຂັບຂີ່ ພາກທິດສະດີ (${cat5Config.categoryName} - ສະລຸບພາບລວມ)`;
+            document.getElementById('cat5-result-summary').innerText = `ຕອບຖືກ: ${totalCorrect} ຂໍ້ | ຕອບຜຶດ: ${totalWrong} ຂໍ້ (ຈາກທັງໝົດ ${totalQuestions} ຂໍ້)`;
             
             const badge = document.getElementById('cat5-status-badge');
             badge.innerText = isPassed ? 'ຜ່ານ' : 'ຕົກ';
             badge.style.color = isPassed ? '#22c55e' : '#ef4444';
+            
+            document.getElementById('cat5-result-subtext').innerText = isPassed ? 'ຍິນດີນຳ! ຜິດລວມບໍ່ເກຶນ 10 ຂໍ້' : 'ເສຍໃຈຍຳ! ຜຶດລວມກາຍ 10 ຂໍ້';
+
+            const nextBtn = document.getElementById('cat5-next-batch-btn');
+            if (nextBtn) {
+                nextBtn.innerText = '🔄 ເລີ່ມ່ຄຳຖາມໃຫມ (ລ້າງໝົດ)';
+                nextBtn.onclick = () => {
+                    localStorage.removeItem('cat5_master_bank_' + cat5Config.fileName);
+                    localStorage.removeItem('cat5_current_batch_' + cat5Config.fileName);
+                    localStorage.removeItem('cat5_history_' + cat5Config.fileName);
+                    localStorage.removeItem('cat5_answers_' + cat5Config.fileName);
+                    localStorage.removeItem('cat5_index_' + cat5Config.fileName);
+                    window.location.reload();
+                };
+            }
+
             renderCat5ResultGallery();
         }
 
@@ -714,25 +912,15 @@
             gallery.innerHTML = '';
             Object.keys(cat5Snapshots).forEach(qNum => {
                 gallery.innerHTML += `
-                    <div style="background: rgba(255,255,255,0.05); border-radius: 3px; padding: 1px; text-align: center;">
-                        <img src="${cat5Snapshots[qNum]}" style="width: 100%; height: 35px; object-fit: cover; border-radius: 2px;">
+                    <div style="background: rgba(255,255,255,0.05); border-radius: 1px; padding: 1px; text-align: center;">
+                        <img src="${cat5Snapshots[qNum]}" style="width: 100%; height: 10px; object-fit: cover; border-radius: 1px;">
                     </div>
                 `;
             });
         }
 
-        function cat5RestartExam() {
-            const resultScreen = document.getElementById('cat5-result-screen');
-            if (resultScreen) resultScreen.style.display = 'none';
-            const examGrid = document.querySelector('.cat5-exam-grid');
-            const topHeader = document.querySelector('.cat5-top-header');
-            const bottomBar = document.querySelector('.cat5-bottom-bar');
-            if (examGrid) examGrid.style.display = 'grid';
-            if (topHeader) topHeader.style.display = 'flex';
-            if (bottomBar) bottomBar.style.display = 'flex';
-            cat5Snapshots = {};
-            cat5Answers = {};
-            loadCat5Questions();
+        function cat5ProceedNextBatch() {
+            window.location.reload();
         }
     </script>
 </body>
