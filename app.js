@@ -17,7 +17,7 @@ let teacherTempUnlocked = false;
 const TELEGRAM_BOT_TOKEN = '8235688305:AAGUwsZaWzJJn7keTauBLpbUcUYP5eRuv_A';
 const TELEGRAM_CHAT_ID = '-5193551029';
 
-// 💾 โหลดข้อมูลส่วนตัว, ล็อกฟอร์มถ้าเคยกรอกแล้ว และนับจำนวนครั้งที่เข้าใช้งาน
+// 💾 โหลดข้อมูลส่วนตัว และตรวจสอบล็อก
 window.addEventListener('DOMContentLoaded', () => {
     const savedName = localStorage.getItem('lao_quiz_student_name');
     const savedAge = localStorage.getItem('lao_quiz_student_age');
@@ -55,13 +55,6 @@ window.addEventListener('DOMContentLoaded', () => {
     let visitCount = parseInt(localStorage.getItem('lao_quiz_visit_count')) || 0;
     visitCount++;
     localStorage.setItem('lao_quiz_visit_count', visitCount);
-
-    const visitBadge = document.getElementById('login-count-badge');
-    const visitNum = document.getElementById('visit-count-num');
-    if (visitBadge && visitNum) {
-        visitNum.innerText = visitCount;
-        visitBadge.style.display = 'block';
-    }
 
     checkHomeUnlockStatus();
     window.addEventListener('online', processOfflineQueue);
@@ -166,6 +159,8 @@ function validateAndStartApp(mode) {
     const filename = homeSelect ? homeSelect.value : currentCategoryFile;
     const isStudyPassed = (localStorage.getItem(`lao_quiz_study_passed_${filename}`) === 'true') || teacherTempUnlocked || (localStorage.getItem(`lao_quiz_teacher_secret_${filename}`) === 'true');
     const isQuizPassed = (localStorage.getItem(`lao_quiz_quiz_passed_${filename}`) === 'true') || teacherTempUnlocked || (localStorage.getItem(`lao_quiz_teacher_secret_${filename}`) === 'true');
+    const savedWrong = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + filename)) || [];
+    const isPermanentUnlocked = (localStorage.getItem(`lao_quiz_teacher_secret_${filename}`) === 'true') || teacherTempUnlocked;
 
     if (mode === 'quiz' || mode === 'review_wrong') {
         if (!isStudyPassed) {
@@ -177,6 +172,10 @@ function validateAndStartApp(mode) {
     if (mode === 'random') {
         if (!isQuizPassed) {
             alert('⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານໄດ້!\nກະລຸນາອ່ານແບບທົດສອບ (ໝວດ 2) ໃຫ້ຈົບທຸກຂໍ້ກ່ອນ');
+            return;
+        }
+        if (savedWrong.length > 0 && !isPermanentUnlocked) {
+            alert(`⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານ ໝວດ 3 ໄດ້!\nທ່ານມີຂໍ້ທີ່ຕອບຜິດຄ້າງຢູ່ໃນ ໝວດ 4 ຈຳນວນ ${savedWrong.length} ຂໍ້\nກະລຸນາเข้าไปแก้ข้อผิดในหมวด 4 ให้หมดก่อนครับ!`);
             return;
         }
     }
@@ -339,7 +338,7 @@ function teacherUnlock() {
     if (password === null) return;
 
     const homeSelect = document.getElementById('homeCategory');
-    const filename = homeSelect ? homeSelect.value : 'ABC.txt';
+    const filename = homeSelect && homeSelect.value ? homeSelect.value : currentCategoryFile;
 
     if (password === "1234") {
         teacherTempUnlocked = true;
@@ -378,14 +377,15 @@ function teacherUnlock() {
     }
 }
 
+// 🔒 ตรวจสอบการล็อกและปลดล็อก พร้อมแสดงจำนวนข้อในวงเล็บ
 function checkHomeUnlockStatus() {
     const homeSelect = document.getElementById('homeCategory');
-    if (homeSelect && !homeSelect.disabled) {
+    if (homeSelect && homeSelect.value) {
         currentCategoryFile = homeSelect.value;
-        localStorage.setItem('lao_quiz_selected_category', currentCategoryFile);
     }
     const filename = currentCategoryFile;
 
+    const btn1 = document.getElementById('btn-mode-1');
     const btn2 = document.getElementById('btn-mode-2');
     const btn3 = document.getElementById('btn-mode-3');
     const btn4 = document.getElementById('btn-mode-4');
@@ -393,16 +393,33 @@ function checkHomeUnlockStatus() {
 
     const isStudyPassed = (localStorage.getItem(`lao_quiz_study_passed_${filename}`) === 'true') || teacherTempUnlocked || (localStorage.getItem(`lao_quiz_teacher_secret_${filename}`) === 'true');
     const isQuizPassed = (localStorage.getItem(`lao_quiz_quiz_passed_${filename}`) === 'true') || teacherTempUnlocked || (localStorage.getItem(`lao_quiz_teacher_secret_${filename}`) === 'true');
+    
+    const savedWrong = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + filename)) || [];
+    const hasWrongQuestions = savedWrong.length > 0;
+    const isPermanentUnlocked = (localStorage.getItem(`lao_quiz_teacher_secret_${filename}`) === 'true') || teacherTempUnlocked;
+
+    // ดึงจำนวนข้อที่ทำค้างไว้มาแสดงในวงเล็บ
+    const quizState = JSON.parse(localStorage.getItem('lao_quiz_state_quiz_' + filename)) || {};
+    const quizAnsweredCount = quizState.userAnswers ? Object.keys(quizState.userAnswers).length : 0;
+
+    const randomState = JSON.parse(localStorage.getItem('lao_quiz_state_random_' + filename)) || {};
+    const randomAnsweredCount = randomState.userAnswers ? Object.keys(randomState.userAnswers).length : 0;
+
+    if (btn1) {
+        btn1.style.background = '#0033FF';
+        btn1.style.color = '#ffffff';
+        btn1.innerHTML = `📖 1. ໂໝດອ່ານຮຽນຮູ້ (ຄຳຕອບຖືກສະແດງ)`;
+    }
 
     if (btn2) {
         if (isStudyPassed) {
             btn2.style.background = '#f57f17';
             btn2.style.color = '#ffffff';
-            btn2.innerHTML = '📝 2. ໂໝດແບບທົດສອບ (ຄິດຄະແນນ)';
+            btn2.innerHTML = `📝 2. ໂໝດແບບທົດສອບ (${quizAnsweredCount} ຂໍ້)`;
         } else {
             btn2.style.background = '#64748b';
             btn2.style.color = '#cbd5e1';
-            btn2.innerHTML = '🔒 2. ໂໝດແບບທົດສອບ (ຄິດຄະແນນ) - [ຕ້ອງອ່ານໝວດ 1 ໃຫ້ຈົບທຸກຂໍ້ກ່ອນ]';
+            btn2.innerHTML = `🔒 2. ໂໝດແບບທົດສອບ (${quizAnsweredCount} ຂໍ້) - [ຕ້ອງອ່ານໝວດ 1 ໃຫ້ຈົບກ່ອນ]`;
         }
     }
 
@@ -410,35 +427,43 @@ function checkHomeUnlockStatus() {
         if (isStudyPassed) {
             btn4.style.background = '#dc2626';
             btn4.style.color = '#ffffff';
-            btn4.innerHTML = '🎯 4. ໂໝດແກ້ໄຂຂໍ້ຜິດ (ຄຳຖາມທີ່ເຄີຍຕອບຜິດ)';
+            btn4.innerHTML = `🎯 4. ໂໝດແກ້ໄຂຂໍ້ຜິດ (${savedWrong.length} ຂໍ້)`;
         } else {
             btn4.style.background = '#64748b';
             btn4.style.color = '#cbd5e1';
-            btn4.innerHTML = '🔒 4. ໂໝດແກ້ໄຂຂໍ້ຜິດ - [ຕ້ອງອ່ານໝວດ 1 ໃຫ້ຈົບທຸກຂໍ້ກ່ອນ]';
+            btn4.innerHTML = `🔒 4. ໂໝດແກ້ໄຂຂໍ້ຜິດ (${savedWrong.length} ຂໍ້) - [ຕ້ອງອ່ານໝວດ 1 ໃຫ້ຈົບກ່ອນ]`;
         }
     }
 
     if (btn3) {
-        if (isQuizPassed) {
-            btn3.style.background = '#7e22ce';
-            btn3.style.color = '#ffffff';
-            btn3.innerHTML = '🔀 3. ໂໝດສະຫຼັບຄຳຖາມ (Random)';
-        } else {
+        if (!isQuizPassed) {
             btn3.style.background = '#64748b';
             btn3.style.color = '#cbd5e1';
-            btn3.innerHTML = '🔒 3. ໂໝດສະຫຼັບຄຳຖາມ (Random) - [ຕ້ອງເຮັດໝວດ 2 ໃຫ້ສร็จກ່ອນ]';
+            btn3.innerHTML = `🔒 3. ໂໝດສະຫຼັບຄຳຖາມ (${randomAnsweredCount} ຂໍ້) - [ຕ້ອງເຮັດໝວດ 2 ໃຫ້ສร็จກ່ອນ]`;
+        } else if (hasWrongQuestions && !isPermanentUnlocked) {
+            btn3.style.background = '#64748b';
+            btn3.style.color = '#cbd5e1';
+            btn3.innerHTML = `🔒 3. ໂໝດສະຫຼັບຄຳຖາມ (${randomAnsweredCount} ຂໍ້) - [ຕ້ອງແກ້ໄຂຂໍ້ຜິດໃນໝວດ 4 ໃຫ້ໝົດກ່ອນ]`;
+        } else {
+            btn3.style.background = '#7e22ce';
+            btn3.style.color = '#ffffff';
+            btn3.innerHTML = `🔀 3. ໂໝດສະຫຼັບຄຳຖາມ (${randomAnsweredCount} ຂໍ້)`;
         }
     }
 
     if (btn5) {
-        if (isQuizPassed) {
-            btn5.style.background = '#0d9488';
-            btn5.style.color = '#ffffff';
-            btn5.innerHTML = '🚀 5. ໝວດທີ 5 (ສອບເສັງຈຳລອງພິເສດ)';
-        } else {
+        if (!isQuizPassed) {
             btn5.style.background = '#64748b';
             btn5.style.color = '#cbd5e1';
-            btn5.innerHTML = '🔒 5. ໝວດທີ 5 (ສອບເສັງຈຳລອງພິເສດ) - [ຕ້ອງເຮັດໝວດ 2 ໃຫ້ສร็จກ່ອນ]';
+            btn5.innerHTML = `🔒 5. ໝວດທີ 5 (${randomAnsweredCount} ຂໍ້) - [ຕ້ອງເຮັດໝວດ 2 ໃຫ້ສร็จກ່ອນ]`;
+        } else if (hasWrongQuestions && !isPermanentUnlocked) {
+            btn5.style.background = '#64748b';
+            btn5.style.color = '#cbd5e1';
+            btn5.innerHTML = `🔒 5. ໝວດທີ 5 (${randomAnsweredCount} ຂໍ້) - [ຕ້ອງແກ້ໄຂຂໍ້ຜິດໃນໝວດ 4 ໃຫ້ໝົດກ່ອນ]`;
+        } else {
+            btn5.style.background = '#0d9488';
+            btn5.style.color = '#ffffff';
+            btn5.innerHTML = `🚀 5. ໝວດທີ 5 (${randomAnsweredCount} ຂໍ້)`;
         }
     }
 }
@@ -512,14 +537,14 @@ function updateRoundBanner() {
 
 function startApp(mode) {
     const homeSelect = document.getElementById('homeCategory');
-    if (homeSelect) {
+    if (homeSelect && homeSelect.value) {
         currentCategoryFile = homeSelect.value;
         localStorage.setItem('lao_quiz_selected_category', currentCategoryFile);
     }
     const filename = currentCategoryFile;
 
-    const isStudyPassed = (localStorage.getItem(`lao_quiz_study_passed_${filename}`) === 'true') || teacherTempUnlocked;
-    const isQuizPassed = (localStorage.getItem(`lao_quiz_quiz_passed_${filename}`) === 'true') || teacherTempUnlocked;
+    const isStudyPassed = (localStorage.getItem(`lao_quiz_study_passed_${filename}`) === 'true') || teacherTempUnlocked || (localStorage.getItem(`lao_quiz_teacher_secret_${filename}`) === 'true');
+    const isQuizPassed = (localStorage.getItem(`lao_quiz_quiz_passed_${filename}`) === 'true') || teacherTempUnlocked || (localStorage.getItem(`lao_quiz_teacher_secret_${filename}`) === 'true');
 
     if (mode === 'quiz' || mode === 'review_wrong') {
         if (!isStudyPassed) {
@@ -572,7 +597,7 @@ function goHome() {
     if (wrapper) wrapper.style.display = 'none';
 
     const homeScreen = document.getElementById('home-screen');
-    if (homeScreen) homeScreen.style.display = 'block';
+    if (homeScreen) homeScreen.style.display = 'flex';
 
     const quizBox = document.getElementById('main-quiz-box');
     if (quizBox) {
@@ -778,7 +803,6 @@ function loadQuestion() {
     const qText = document.getElementById('question-text');
     if (qText) {
         qText.innerText = q.question;
-        // 🔍 ขยายขนาดตัวอักษรคำถามให้ใหญ่ขึ้น ชัดเจนขึ้น (1.1rem ถึง 1.2rem)
         qText.style.fontSize = '1.15rem';
         qText.style.lineHeight = '1.5';
         qText.style.fontWeight = 'bold';
@@ -797,7 +821,6 @@ function loadQuestion() {
         q.options.forEach((opt, idx) => {
             const isChecked = userAnswers[currentQuestionIndex] === idx;
             
-            // 🔍 ขยายขนาดตัวอักษรของปุ่มตัวเลือกให้ใหญ่ขึ้น อ่านสะดวกขึ้น (font-size: 1.05rem)
             let optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background: transparent !important; border: 1px solid rgba(255, 255, 255, 0.25) !important;";
 
             if (currentMode === 'study') {
@@ -895,29 +918,25 @@ function nextQuestion() {
 
         if (currentMode === 'study') {
             localStorage.setItem(`lao_quiz_study_passed_${currentCategoryFile}`, 'true');
-            sendResultsToTelegram('ອ່ານຈົບໝວດທີ 1 ແລ້ວ 📖');
+            checkHomeUnlockStatus();
             showStudyCompleteScreen();
+        } else if (currentMode === 'quiz') {
+            localStorage.setItem(`lao_quiz_quiz_passed_${currentCategoryFile}`, 'true');
+            checkHomeUnlockStatus();
+            showResults();
+        } else if (currentMode === 'random') {
+            localStorage.setItem(`lao_quiz_random_passed_${currentCategoryFile}`, 'true');
+            checkHomeUnlockStatus();
+            showResults();
         } else if (currentMode === 'review_wrong') {
             let remainingWrong = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + currentCategoryFile)) || [];
             if (remainingWrong.length > 0) {
                 alert(`⚠️ ຍັງມີຂໍ້ທີ່ຕອບຜິດຄ້າງຢູ່ ${remainingWrong.length} ຂໍ້! ລະບົບຈະວນກັບມາໃຫ້ແກ້ຈົນກວ່າຈະຖືກໝົດ`);
                 startApp('review_wrong'); 
             } else {
-                sendResultsToTelegram('ແກ້ໄຂຂໍ້ຜິດຄົບຖ້ວນສົມບູນ 🎯');
                 showReviewWrongCompleteScreen(); 
             }
         } else {
-            if (currentMode === 'quiz') {
-                localStorage.setItem(`lao_quiz_quiz_passed_${currentCategoryFile}`, 'true');
-            } else if (currentMode === 'random') {
-                localStorage.setItem(`lao_quiz_random_passed_${currentCategoryFile}`, 'true');
-            }
-            incrementCompletedRounds(currentMode, currentCategoryFile);
-            
-            const isPassed = wrongCount <= 10;
-            if (isPassed) incrementPassedRounds(currentCategoryFile);
-
-            sendResultsToTelegram(isPassed ? 'ສອບເສັງຜ່ານ ✅' : 'ສອບເສັງບໍ່ຜ່ານ ❌');
             showResults();
         }
     }
@@ -941,33 +960,13 @@ function showStudyCompleteScreen() {
     const scoreMsg = document.getElementById('score-message');
     const actionButtons = document.getElementById('result-action-buttons');
 
-    if (hasSkipped) {
-        if (finalScore) finalScore.innerHTML = '⚠️ ທ່ານໄດ້ກົດຂ້າມ (ມີການກົດຂ້າມ)';
-        if (scoreMsg) scoreMsg.innerHTML = '⚠️ ທ່ານໄດ້ກົດຂ້າມຂັ້ນຕອນ! ລະບົບເຕືອນ: ຖືວ່າອ່ານບໍ່ຈົບ ຕ້ອງທົບທວນໃໝ່';
-        
-        if (actionButtons) {
-            actionButtons.innerHTML = `
-                <button onclick="startApp('study')" style="padding: 11px; font-size: 0.9rem; font-weight: bold; background: #0284c7; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-                    🔄 ເລີ່ມຕົ້ນໃໝ່
-                </button>
-                <button onclick="goHome()" style="padding: 10px; font-size: 0.85rem; font-weight: bold; background: #475569; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-                    🏠 ກຼັບຄືນໜ້າທຳອິດ
-                </button>
-            `;
-        }
-        return;
-    } else {
-        if (finalScore) finalScore.innerHTML = '🎉 ທ່ານອ່ານທົບທວນຄຳຖາມຈົບໝົດທຸກຂໍ້ແລ້ວ!';
-        if (scoreMsg) scoreMsg.innerHTML = 'ຍິນດີດ້ວຍ! ທ່ານໄດ້ປົດລັອກ ໝວດທີ 2 (ແບບທົດສອບ) ແລະ ໝວດທີ 4 (ແກ້ໄຂຂໍ້ຜິດ) ແລ້ວ!';
-    }
-    
+    if (finalScore) finalScore.innerHTML = '🎉 ທ່ານອ່ານທົບທວນຄຳຖາມຈົບໝົດທຸກຂໍ້ແລ້ວ!';
+    if (scoreMsg) scoreMsg.innerHTML = 'ຍິນດີດ້ວຍ! ທ່ານໄດ້ປົດລັອກ ໝວດທີ 2 (ແບບທົດສອບ) ແລະ ໝວດທີ 4 (ແກ້ໄຂຂໍ້ຜິດ) ແລ້ວ!';
+
     if (actionButtons) {
         actionButtons.innerHTML = `
-            <button onclick="startApp('quiz')" style="padding: 11px; font-size: 0.9rem; font-weight: bold; background: #f57f17; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-                📝 ໄປລອງທົດສອບໃນໝວດທີ 2 ເລີຍ
-            </button>
             <button onclick="goHome()" style="padding: 10px; font-size: 0.85rem; font-weight: bold; background: #475569; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-                🏠 กลับไปหน้าหลัก
+                🏠 ກຼັບຄືນໜ້າທຳອິດ (ໄປເຮັດໝວດ 2)
             </button>
         `;
     }
@@ -985,18 +984,12 @@ function showReviewWrongCompleteScreen() {
     const actionButtons = document.getElementById('result-action-buttons');
 
     if (finalScore) finalScore.innerHTML = '🎉 ຍິນດີນຳ ທ່ານໄດ້ແກ້ໄຂທັງໝົດຖືກຕ້ອງຄົບແລ້ວ';
-    if (scoreMsg) scoreMsg.innerHTML = 'ສຸດຍອດທ່ານໄດ້ຕອບຖືກຄົບທຸກຂໍ້ທີ່ເຄຍເຮັດຜິດໄວ້ ເລືອກເຂົ້າໄປຮຽນລຸ່ມນີ້';
+    if (scoreMsg) scoreMsg.innerHTML = 'ສຸດຍອດ! ທ່ານໄດ້ຕອບຖືກຄົບທຸກຂໍ້ທີ່ເຄຍເຮັດຜິດໄວ້ແລ້ວ (ລະບົບປົດລັອກໝວດ 3 ແລະ 5 ແລ້ວ)';
 
     if (actionButtons) {
         actionButtons.innerHTML = `
-            <button onclick="startApp('quiz')" style="padding: 11px; font-size: 0.9rem; font-weight: bold; background: #f57f17; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-                📝 2. ໝວດແບບທົດສອບ (ມີຄະແນນ)
-            </button>
-            <button onclick="startApp('random')" style="padding: 11px; font-size: 0.9rem; font-weight: bold; background: #7e22ce; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-                🔀 3. ໝວດສະຫຼັບຄຳຖາມ (Random)
-            </button>
             <button onclick="goHome()" style="padding: 10px; font-size: 0.85rem; font-weight: bold; background: #475569; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-                🏠 ກຼັບຄືນໜ້າທຳອິດ
+                🏠 ກຼັບຄືນໜ້າທຳອິດ (ເລືອກໝວດອື່ນ)
             </button>
         `;
     }
@@ -1014,45 +1007,20 @@ function showResults() {
 
     const finalScore = document.getElementById('final-score');
     const scoreMsg = document.getElementById('score-message');
-    const resultRoundDisplay = document.getElementById('result-round-display');
 
-    const totalRounds = getCompletedRounds(currentMode, currentCategoryFile);
-    const passedRounds = getPassedRounds(currentCategoryFile);
-
-    if (resultRoundDisplay) {
-        resultRoundDisplay.innerHTML = `🏆 ຜ່ານແລ້ວ: ${passedRounds} ຮອບ | 🔄 ເຮັດຈົບ: ${totalRounds} ຮອບ`;
-    }
-
-    if (hasSkipped) {
-        if (finalScore) finalScore.innerText = `❌ ສອບເສັງບໍ່ຜ່ານ (ມີການກົດຂ້າມ)`;
-        if (scoreMsg) scoreMsg.innerText = `⚠️ ທ່ານໄດ້ກົດຂ້າມ! ລະບົບເຕືອນ: ສອບບໍ່ຜ່ານ ຕ້ອງສອບເສັງໃໝ່!`;
-        wrongCount = 999; 
-
-        if (actionButtons) {
-            actionButtons.innerHTML = `
-                <button onclick="startApp('${currentMode}')" style="padding: 11px; font-size: 0.9rem; font-weight: bold; background: #0284c7; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-                    🔄 ເລີ່ມຕົ້ນໃໝ່
-                </button>
-                <button onclick="goHome()" style="padding: 10px; font-size: 0.85rem; font-weight: bold; background: #475569; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-                    🏠 ກຼັບຄືນໜ້າທຳອິດ
-                </button>
-            `;
-        }
-        return;
-    } else {
-        if (finalScore) finalScore.innerText = `ຜິດພາດ: ${wrongCount} ຂໍ້ (ຈາກ ${quizQuestions.length} ຂໍ້)`;
-        const isPassed = wrongCount <= 10;
-        const msg = isPassed
-            ? `🎉 ຍິນດີດ້ວຍ! ທ່ານຜ່ານການສອບເສັງ (ຜິດ ${wrongCount} ຂໍ້ ເຊິ່ງບໍ່ເກີນເກນ 10 ຂໍ້)`
-            : `❌ ທ່ານບໍ່ຜ່ານການສອບເສັງ (ຜິດ ${wrongCount} ຂໍ້ ເຊິ່ງເກີນເກນ 10 ຂໍ້)`;
-        if (scoreMsg) scoreMsg.innerText = msg;
-    }
+    if (finalScore) finalScore.innerText = `ຜິດພາດ: ${wrongCount} ຂໍ້ (ຈາກ ${quizQuestions.length} ຂໍ້)`;
+    const isPassed = wrongCount <= 10;
+    const msg = isPassed
+        ? `🎉 ຍິນດີດ້ວຍ! ທ່ານຜ່ານການສອບເສັງ (ຜິດ ${wrongCount} ຂໍ້)`
+        : `❌ ທ່ານບໍ່ຜ່ານການສອບເສັງ (ຜິດ ${wrongCount} ຂໍ້)`;
+    if (scoreMsg) scoreMsg.innerText = msg;
 
     let currentWrongSaved = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + currentCategoryFile)) || [];
-    if (currentWrongSaved.length > 0 && !hasSkipped) {
+    
+    if (currentWrongSaved.length > 0) {
         reviewButtonHtml = `
-            <button onclick="startApp('review_wrong')" style="padding: 11px; font-size: 0.9rem; font-weight: bold; background: #dc2626; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-                🎯 ໄປແກ້ສະເພາະຂໍ້ທີ່ຜິດ (${currentWrongSaved.length} ຂໍ້)
+            <button onclick="startApp('review_wrong')" style="padding: 12px; font-size: 0.95rem; font-weight: bold; background: #dc2626; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                🎯 ໄປແກ້ສະເພາະຂໍ້ທີ່ຜິດ (${currentWrongSaved.length} ຂໍ້) - [ບັງຄັບ]
             </button>
         `;
     }
@@ -1060,34 +1028,14 @@ function showResults() {
     if (actionButtons) {
         actionButtons.innerHTML = `
             ${reviewButtonHtml}
-            <button onclick="restartQuiz()" class="btn-restart" style="width: 100%; background: #0284c7;">ເລີ່ມສອບໃໝ່</button>
+            ${currentWrongSaved.length === 0 ? `
             <button onclick="goHome()" style="padding: 10px; font-size: 0.85rem; font-weight: bold; background: #475569; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-                🏠 กลับไปหน้าหลัก
-            </button>
+                🏠 ກຼັບຄືນໜ້າທຳອິດ
+            </button>` : ''}
         `;
     }
 }
 
-function restartQuiz() {
-    localStorage.removeItem('lao_quiz_state_' + currentMode + '_' + currentCategoryFile);
-    isAnswered = false;
-    correctCount =0;
-    wrongCount = 0;
-    hasSkipped = false;
-    wrongQuestionsList = [];
-    updateLiveScore();
-    goHome();
-}
-
-window.onload = function() {
-    const selectElement = document.getElementById('licenseCategory');
-    const initialFile = selectElement ? selectElement.value : 'ABC.txt';
-    currentCategoryFile = initialFile;
-    checkHomeUnlockStatus(); 
-    sendLoginNotificationToTelegram();
-};
-
-// 🚀 ฟังก์ชันเปิดหน้าหมวดที่ 5 (ดึงประเภทที่เลือกจริงอย่างแม่นยำ 100%)
 function openCategory5() {
     const nameInput = document.getElementById('studentName');
     const ageInput = document.getElementById('studentAge');
@@ -1106,13 +1054,14 @@ function openCategory5() {
 
     let selectedCategory = homeSelect ? homeSelect.value : '';
     if (!selectedCategory) {
-        selectedCategory = localStorage.getItem('lao_quiz_selected_category') || 'A.txt';
+        selectedCategory = localStorage.getItem('lao_quiz_selected_category') || 'ABC.txt';
     }
 
-    const isQuizPassed = (localStorage.getItem(`lao_quiz_quiz_passed_${selectedCategory}`) === 'true') || teacherTempUnlocked || (localStorage.getItem(`lao_quiz_teacher_secret_${selectedCategory}`) === 'true');
+    const savedWrong = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + selectedCategory)) || [];
+    const isPermanentUnlocked = (localStorage.getItem(`lao_quiz_teacher_secret_${selectedCategory}`) === 'true') || teacherTempUnlocked;
 
-    if (!isQuizPassed) {
-        alert('⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານໄດ້!\nກະລຸນາອ່ານແບບທົດສອບ (ໝວດ 2) ໃຫ້ຈົບທຸກຂໍ້ກ່ອນ');
+    if (savedWrong.length > 0 && !isPermanentUnlocked) {
+        alert(`⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານ ໝວດ 5 ได้!\nທ່ານມີຂໍ້ທີ່ຕອບຜິດຄ້າງຢູ່ໃນ ໝວດ 4 ຈຳນວນ ${savedWrong.length} ຂໍ້\nກະລຸນາเข้าไปแก้ข้อผิดให้หมดก่อนครับ!`);
         return;
     }
 
@@ -1120,14 +1069,6 @@ function openCategory5() {
     localStorage.setItem('lao_quiz_student_age', age);
     localStorage.setItem('lao_quiz_student_phone', phone);
     localStorage.setItem('lao_quiz_selected_category', selectedCategory);
-
-    const licenseTypeOnly = selectedCategory.replace('.txt', '').toUpperCase();
-    let startMsg = `📚 🚀 ນັກຮຽນກຳລັງເລີ່ມເຂົ້າຮຽນແລ້ວ 🚀 📚\n`;
-    startMsg += `👤 ຊື່: ${name} (ອາຍຸ: ${age} ປີ)\n`;
-    startMsg += `📞 ເບີໂທ: ${phone}\n`;
-    startMsg += `🚗 ປະເພດໃບຂັບຂີ່: ${licenseTypeOnly}\n`;
-    startMsg += `📌 ກຳລັງເຂົ້າຮຽນໃນ: 🚀 5. ໝວດທີ 5 (ສອບເສັງຈຳລອງພິເສດ) (ເລີ່ມຕົ້ນທີ່ຂໍ້ 1) ✅`;
-    sendToTelegramAPI(startMsg);
 
     setTimeout(() => {
         window.location.href = 'category5.html';
