@@ -347,9 +347,15 @@ function teacherUnlock() {
         localStorage.removeItem(`lao_quiz_quiz_passed_${filename}`);
         localStorage.removeItem(`lao_quiz_teacher_secret_${filename}`);
 
+        if (homeSelect) {
+            homeSelect.disabled = false;
+            homeSelect.style.backgroundColor = '#475569';
+        }
+        localStorage.removeItem('lao_quiz_selected_category');
+
         checkHomeUnlockStatus();
         updateSecretJumpButton();
-        alert("🎉 ປົດລັອກແບບ **ຊົ່ວຄາວ** ສຳເລັດ!");
+        alert("🎉 ປົດລັອກແບບ **ຊົ່ວຄາວ** ສຳເລັດ! (ສາມາດປ່ຽນປະເພດໃບຂັບຂີ່ໄດ້ແລ້ວ)");
     } 
     else if (password === "77116687") {
         localStorage.setItem(`lao_quiz_study_passed_${filename}`, 'true');
@@ -357,9 +363,15 @@ function teacherUnlock() {
         localStorage.setItem(`lao_quiz_teacher_secret_${filename}`, 'true');
         teacherTempUnlocked = false;
 
+        if (homeSelect) {
+            homeSelect.disabled = false;
+            homeSelect.style.backgroundColor = '#475569';
+        }
+        localStorage.removeItem('lao_quiz_selected_category');
+
         checkHomeUnlockStatus();
         updateSecretJumpButton();
-        alert("🎉 ປົດລັອກແບບ **ຖາວອນ** ສຳເລັດ!");
+        alert("🎉 ປົດລັອກແບບ **ຖາວອນ** ສຳເລັດ! (ສາມາດປ່ຽນປະເພດໃບຂັບຂີ່ໄດ້ແລ້ວ)");
     } 
     else {
         alert("❌ ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ!");
@@ -764,11 +776,17 @@ function loadQuestion() {
     if (qCount) qCount.innerText = `ຄຳຖາມທີ ${currentQuestionIndex + 1} ຈາກ ${quizQuestions.length}`;
 
     const qText = document.getElementById('question-text');
-    if (qText) qText.innerText = q.question;
+    if (qText) {
+        qText.innerText = q.question;
+        // 🔍 ขยายขนาดตัวอักษรคำถามให้ใหญ่ขึ้น ชัดเจนขึ้น (1.1rem ถึง 1.2rem)
+        qText.style.fontSize = '1.15rem';
+        qText.style.lineHeight = '1.5';
+        qText.style.fontWeight = 'bold';
+    }
 
     const imgContainer = document.getElementById('image-container');
     if (imgContainer) {
-        imgContainer.innerHTML = q.image ? `<img src="${q.image}" alt="Traffic Sign">` : '';
+        imgContainer.innerHTML = q.image ? `<img src="${q.image}" alt="Traffic Sign" style="max-height: 180px;">` : '';
     }
 
     const optionsContainer = document.getElementById('options-container');
@@ -778,14 +796,16 @@ function loadQuestion() {
 
         q.options.forEach((opt, idx) => {
             const isChecked = userAnswers[currentQuestionIndex] === idx;
-            let optionStyle = "display: flex !important; align-items: center !important; padding: 10px 12px !important; border-radius: 6px !important; margin-bottom: 6px !important; cursor: pointer !important; font-size: 0.9rem !important; line-height: 1.35 !important; font-weight: bold !important; color: #ffffff !important; background: transparent !important; border: 1px solid rgba(255, 255, 255, 0.15) !important;";
+            
+            // 🔍 ขยายขนาดตัวอักษรของปุ่มตัวเลือกให้ใหญ่ขึ้น อ่านสะดวกขึ้น (font-size: 1.05rem)
+            let optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background: transparent !important; border: 1px solid rgba(255, 255, 255, 0.25) !important;";
 
             if (currentMode === 'study') {
-                if (idx === q.answer) optionStyle = "display: flex !important; align-items: center !important; padding: 10px 12px !important; border-radius: 6px !important; margin-bottom: 6px !important; cursor: pointer !important; font-size: 0.9rem !important; line-height: 1.35 !important; font-weight: bold !important; color: #ffffff !important; background-color: #15803d !important; border: 1px solid #16a34a !important;";
+                if (idx === q.answer) optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background-color: #15803d !important; border: 1px solid #16a34a !important;";
             } else {
                 if (isAnswered) {
-                    if (idx === q.answer) optionStyle = "display: flex !important; align-items: center !important; padding: 10px 12px !important; border-radius: 6px !important; margin-bottom: 6px !important; cursor: pointer !important; font-size: 0.9rem !important; line-height: 1.35 !important; font-weight: bold !important; color: #ffffff !important; background-color: #15803d !important; border: 1px solid #16a34a !important;"; 
-                    else if (isChecked && idx !== q.answer) optionStyle = "display: flex !important; align-items: center !important; padding: 10px 12px !important; border-radius: 6px !important; margin-bottom: 6px !important; cursor: pointer !important; font-size: 0.9rem !important; line-height: 1.35 !important; font-weight: bold !important; color: #ffffff !important; background-color: #b91c1c !important; border: 1px solid #dc2626 !important;"; 
+                    if (idx === q.answer) optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background-color: #15803d !important; border: 1px solid #16a34a !important;"; 
+                    else if (isChecked && idx !== q.answer) optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background-color: #b91c1c !important; border: 1px solid #dc2626 !important;"; 
                 }
             }
 
@@ -793,7 +813,7 @@ function loadQuestion() {
             optionsContainer.innerHTML += `
                 <label class="option-label" onclick="selectOption(${idx})" style="${optionStyle}">
                     <input type="radio" name="option" value="${idx}" ${isChecked ? 'checked' : ''} ${isAnswered && currentMode !== 'study' ? 'disabled' : ''} style="display: none;">
-                    <span style="margin-right: 8px; color: #ffffff;">${letterLabel}.</span>
+                    <span style="margin-right: 10px; color: #ffffff; font-size: 1.1rem;">${letterLabel}.</span>
                     <span style="color: #ffffff;">${opt}</span>
                 </label>
             `;
@@ -1051,7 +1071,7 @@ function showResults() {
 function restartQuiz() {
     localStorage.removeItem('lao_quiz_state_' + currentMode + '_' + currentCategoryFile);
     isAnswered = false;
-    correctCount = 0;
+    correctCount =0;
     wrongCount = 0;
     hasSkipped = false;
     wrongQuestionsList = [];
@@ -1084,7 +1104,6 @@ function openCategory5() {
         return;
     }
 
-    // 📌 ดึงค่าจาก homeSelect หรือ localStorage โดยบังคับให้ถูกต้องตามที่เลือกจริง
     let selectedCategory = homeSelect ? homeSelect.value : '';
     if (!selectedCategory) {
         selectedCategory = localStorage.getItem('lao_quiz_selected_category') || 'A.txt';
@@ -1102,7 +1121,6 @@ function openCategory5() {
     localStorage.setItem('lao_quiz_student_phone', phone);
     localStorage.setItem('lao_quiz_selected_category', selectedCategory);
 
-    // ส่งแจ้งเตือนเข้า Telegram ว่ากำลังเข้าหมวดที่ 5
     const licenseTypeOnly = selectedCategory.replace('.txt', '').toUpperCase();
     let startMsg = `📚 🚀 ນັກຮຽນກຳລັງເລີ່ມເຂົ້າຮຽນແລ້ວ 🚀 📚\n`;
     startMsg += `👤 ຊື່: ${name} (ອາຍຸ: ${age} ປີ)\n`;

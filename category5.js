@@ -16,7 +16,6 @@ window.addEventListener('DOMContentLoaded', () => {
     
     initCat5Webcam();
     loadCat5Questions();
-    // 🔕 ปิดการส่งแจ้งเตือน Telegram ตอนเริ่มเข้าสอบชุดย่อยเรียบร้อยแล้ว
 });
 
 function setCat5Rules(filename) {
@@ -115,7 +114,6 @@ async function loadCat5Questions() {
         cat5Answers = {};
         cat5Snapshots = {};
 
-        // เคลียร์แกลเลอรีรูปถ่ายหน้าจอหลักให้เกลี้ยง
         const gallery = document.getElementById('cat5-snapshots-gallery');
         if (gallery) gallery.innerHTML = '';
 
@@ -246,10 +244,10 @@ function renderCat5Question() {
     if (cat5Questions.length === 0) return;
     const q = cat5Questions[cat5Index];
 
-    document.getElementById('cat5-question-text').innerText = `ຂໍ້ທີ ${cat5Index + 1}: ${q.question}`;
+    // ✂️ ตัดคำว่า "ຂໍ້ທີ X:" ออก ให้แสดงเฉพาะเนื้อหาคำถามโดยตรง
+    document.getElementById('cat5-question-text').innerText = q.question;
     
     const imgBox = document.getElementById('cat5-image-container');
-    // ปลดล็อกขนาดใน JS แล้วให้ CSS จัดการการแสดงผลตามหน้าจอแทนอย่างอิสระ
     imgBox.innerHTML = q.image ? `<img src="${q.image}" alt="Sign" class="cat5-question-img">` : '';
 
     const optList = document.getElementById('cat5-options-list');
@@ -327,10 +325,6 @@ function cat5EvaluateAndShowResults() {
     const isPassed = wrongCount <= cat5Config.maxWrong;
     localStorage.setItem('lao_quiz_wrong_' + cat5Config.fileName, JSON.stringify(wrongList));
 
-    document.querySelector('.cat5-exam-grid').style.display = '';
-    document.querySelector('.cat5-exam-grid').style.removeProperty('display');
-    
-    // ซ่อนหน้าจอสอบและแสดงหน้าจอผลลัพธ์
     const examGrid = document.querySelector('.cat5-exam-grid');
     const topHeader = document.querySelector('.cat5-top-header');
     const bottomBar = document.querySelector('.cat5-bottom-bar');
@@ -366,20 +360,17 @@ function renderCat5ResultGallery() {
 }
 
 function cat5RestartExam() {
-    // 1. ซ่อนหน้าจอผลลัพธ์
     const resultScreen = document.getElementById('cat5-result-screen');
     if (resultScreen) resultScreen.style.display = 'none';
 
-    // 2. แสดงเลย์เอาต์หน้าจอสอบกลับมาตามปกติ
     const examGrid = document.querySelector('.cat5-exam-grid');
     const topHeader = document.querySelector('.cat5-top-header');
     const bottomBar = document.querySelector('.cat5-bottom-bar');
     
-    if (examGrid) examGrid.style.display = window.innerWidth <= 768 ? 'grid' : 'grid';
+    if (examGrid) examGrid.style.display = 'grid';
     if (topHeader) topHeader.style.display = 'flex';
     if (bottomBar) bottomBar.style.display = 'flex';
 
-    // 3. ล้างรูปถ่ายแคชและข้อมูลเก่าทั้งหมด แล้วโหลดข้อสอบชุดใหม่ทันที
     cat5Snapshots = {};
     cat5Answers = {};
     loadCat5Questions();

@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- 📌 เพิ่มการเชื่อมโยง Manifest และตั้งค่า PWA เต็มจอ -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Quiz ໃບຂັບຂີ່">
+    <meta name="theme-color" content="#0f172a">
+
     <title>ໝວດທີ 5 - ສອບເສັງໃບຂັບຂີ່ ພາກທິດສະດີ</title>
     <link rel="icon" href="data:,">
     <style>
@@ -334,6 +342,7 @@
             </div>
 
             <div class="cat5-main-content">
+                <!-- ✂️ ตัดคำว่า ຂໍ້ທີ X ออก เหลือเฉพาะเนื้อหาคำถาม -->
                 <div id="cat5-question-text" class="cat5-q-title">ກຳລັງໂຫຼດຂໍ້ສອບ...</div>
                 <div id="cat5-image-container" class="cat5-img-box"></div>
                 <div id="cat5-options-list" class="cat5-options-box"></div>
@@ -436,7 +445,6 @@
             setCat5Rules(savedCat);
             initCat5Webcam();
             initOrResumeBank();
-            // 🔕 ปิดการส่งแจ้งเตือนตอนเข้าหมวด 5 หรือจบรอบย่อย (ตามความต้องการของคุณ)
         });
 
         function setCat5Rules(filename) {
@@ -716,7 +724,8 @@
             }
 
             const q = cat5Questions[cat5Index];
-            document.getElementById('cat5-question-text').innerText = `ຂໍ້ທີ ${cat5Index + 1}: ${q.question}`;
+            // ✂️ ตัดคำว่า "ຂໍ້ທີ X:" ออก ให้แสดงเฉพาะเนื้อหาคำถามโดยตรง
+            document.getElementById('cat5-question-text').innerText = q.question;
             
             const imgBox = document.getElementById('cat5-image-container');
             imgBox.innerHTML = q.image ? `<img src="${q.image}" alt="Sign">` : '';
@@ -807,9 +816,9 @@
             localStorage.removeItem('cat5_index_' + cat5Config.fileName);
 
             if (masterBank.length === 0) {
-                showFinalCompleteScreen(); // 🚀 ส่ง Telegram เฉพาะตอนจบภาพรวมทั้งหมดตรงนี้
+                showFinalCompleteScreen();
             } else {
-                showBatchSummaryScreen(correctCount, wrongCount, masterBank.length); // 🔕 ไม่ส่ง Telegram ตอนจบรอบย่อย
+                showBatchSummaryScreen(correctCount, wrongCount, masterBank.length);
             }
         }
 
@@ -857,7 +866,6 @@
 
             let isPassed = totalWrong <= 10;
 
-            // 🚀 **ส่งสรุปผลภาพรวมทั้งหมดเข้า Telegram ที่นี่ที่เดียว**
             const sName = localStorage.getItem('lao_quiz_student_name') || 'ບໍ່ລະບຸຊື່';
             const sAge = localStorage.getItem('lao_quiz_student_age') || '-';
             const sPhone = localStorage.getItem('lao_quiz_student_phone') || '-';

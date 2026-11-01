@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- 📌 เพิ่มการเชื่อมโยง Manifest และตั้งค่า PWA เต็มจอ -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Quiz ໃບຂັບຂີ່">
+    <meta name="theme-color" content="#0f172a">
+
     <title>ໂປຼແກມຮຽນ ຄຳຖາມສອບເສັງໃບຂັບຂີ່ - Lao Driving License Quiz</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="data:,">
@@ -89,7 +97,6 @@
                         🔒 4. ໂໝດແກ້ໄຂຂໍ້ຜິດ - [ຕ້ອງອ່ານໝວດ 1 ໃຫ້ຈົບກ່ອນ]
                     </button>
 
-                    <!-- 🚀 ปุ่มหมวดที่ 5 มี ID เพื่อควบคุมการล็อก/ปลดล็อก -->
                     <button id="btn-category-5" onclick="openCategory5()" style="padding: 10px 14px; font-size: 0.95rem; font-weight: bold; background: #64748b; color: #cbd5e1; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
                         🔒 5. ໝວດທີ 5 (ສອບເສັງຈຳລອງພິເສດ) - [ຕ້ອງເຮັດໝວດ 2 ໃຫ້ສร็จກ່ອນ]
                     </button>
