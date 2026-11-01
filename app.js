@@ -10,14 +10,11 @@ let currentCategoryFile = 'ABC.txt';
 let currentMode = 'quiz'; 
 let hasSkipped = false; 
 
-// 🔑 ตัวแปรเก็บสถานะปลดล็อกชั่วคราว
 let teacherTempUnlocked = false;
 
-// 🤖 ตั้งค่า Telegram API และ Chat ID
 const TELEGRAM_BOT_TOKEN = '8235688305:AAGUwsZaWzJJn7keTauBLpbUcUYP5eRuv_A';
 const TELEGRAM_CHAT_ID = '-5193551029';
 
-// 💾 โหลดข้อมูลส่วนตัว และตรวจสอบล็อก
 window.addEventListener('DOMContentLoaded', () => {
     const savedName = localStorage.getItem('lao_quiz_student_name');
     const savedAge = localStorage.getItem('lao_quiz_student_age');
@@ -61,78 +58,10 @@ window.addEventListener('DOMContentLoaded', () => {
     processOfflineQueue();
 });
 
-function sendLoginNotificationToTelegram() {
-    const name = localStorage.getItem('lao_quiz_student_name');
-    const age = localStorage.getItem('lao_quiz_student_age');
-    const phone = localStorage.getItem('lao_quiz_student_phone');
-    const visitCount = localStorage.getItem('lao_quiz_visit_count') || '1';
-
-    if (!name || !phone) return;
-
-    const homeSelect = document.getElementById('homeCategory');
-    const selectedCategory = homeSelect ? homeSelect.value : currentCategoryFile;
-    const licenseType = selectedCategory ? selectedCategory.replace('.txt', '') : 'ບໍ່ໄດ້ລະບຸ';
-
-    const loginTime = new Date().toLocaleString('lo-LA', { 
-        timeZone: 'Asia/Vientiane',
-        dateStyle: 'short', 
-        timeStyle: 'medium' 
-    });
-
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-                const mapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
-
-                const message = `🔔 📚 **ນັກຮຽນເຂົ້າສູ່ລະບົບແລ້ວ (ຄັ້ງທີ ${visitCount})** 📚 🔔\n` +
-                                `👤 ຊື່: ${name} (ອາຍຸ: ${age || '-'} ປີ)\n` +
-                                `📞 ເບີໂທ: ${phone}\n` +
-                                `🚗 ປະເພດໃບຂັບຂີ່: ${licenseType}\n` +
-                                `⏰ ເວລາ: ${loginTime}\n` +
-                                `📍 ຕຳແໜ່ງ GPS: [ຄລິກເບິ່ງແຜນທີ່](${mapsLink})\n` +
-                                `📌 ສະຖານະ: ເປີດໜ້າເວັບເຂົ້າສູ່ລະບົບ ✅`;
-                sendToTelegramAPI(message);
-            },
-            (error) => {
-                const message = `🔔 📚 **ນັກຮຽນເຂົ້າສູ່ລະບົບແລ້ວ (ຄັ້ງທີ ${visitCount})** 📚 🔔\n` +
-                                `👤 ຊື່: ${name} (ອາຍຸ: ${age || '-'} ປີ)\n` +
-                                `📞 ເບີໂທ: ${phone}\n` +
-                                `🚗 ປະເພດໃບຂັບຂີ່: ${licenseType}\n` +
-                                `⏰ ເວລາ: ${loginTime}\n` +
-                                `📍 ຕຳແໜ່ງ GPS: ⚠️ ປະຕິເສດການແບ່ງປັນຕຳແໜ່ງ\n` +
-                                `📌 ສະຖານະ: ເປີດໜ້າເວັບເຂົ້າສູ່ລະບົບ ✅`;
-                sendToTelegramAPI(message);
-            },
-            { enableHighAccuracy: true }
-        );
-    } else {
-        const message = `🔔 📚 **ນັກຮຽນເຂົ້າສູ່ລະບົບແລ້ວ (ຄັ້ງທີ ${visitCount})** 📚 🔔\n` +
-                        `👤 ຊື່: ${name} (ອາຍຸ: ${age || '-'} ປີ)\n` +
-                        `📞 ເບີໂທ: ${phone}\n` +
-                        `🚗 ປະເພດໃບຂັບຂີ່: ${licenseType}\n` +
-                        `⏰ ເວລາ: ${loginTime}\n` +
-                        `📍 ຕຳແໜ່ງ GPS: ⚠️ ເບຣົາເຊີບໍ່ຮອງຮັບ Geolocation\n` +
-                        `📌 ສະຖານະ: ເປີດໜ້າເວັບເຂົ້າສູ່ລະບົບ ✅`;
-        sendToTelegramAPI(message);
-    }
-}
-
-function sendClassStartingNotification(modeName) {
-    const name = localStorage.getItem('lao_quiz_student_name');
-    const age = localStorage.getItem('lao_quiz_student_age');
-    const phone = localStorage.getItem('lao_quiz_student_phone');
-    const licenseType = currentCategoryFile.replace('.txt', '');
-
-    const message = `📖 🚀 **ນັກຮຽນກຳລັງເລີ່ມເຂົ້າຮຽນແລ້ວ** 🚀 📖\n` +
-                    `👤 ຊື່: ${name} (ອາຍຸ: ${age} ປີ)\n` +
-                    `📞 ເບີໂທ: ${phone}\n` +
-                    `🚗 ປະເພດໃບຂັບຂີ່: ${licenseType}\n` +
-                    `📌 ກຳລັງເຂົ້າຮຽນໃນ: **${modeName}** (ເລີ່ມຕົ້ນທີ່ຂໍ້ທີ 1) ✅`;
-
-    sendToTelegramAPI(message);
-}
+// 🔄 อัปเดตสถานะและจำนวนข้อผิดทันทีเมื่อกดกลับมาจากหมวดอื่นโดยไม่รีเฟรช
+window.addEventListener('pageshow', (event) => {
+    checkHomeUnlockStatus();
+});
 
 function validateAndStartApp(mode) {
     const nameInput = document.getElementById('studentName');
@@ -162,7 +91,7 @@ function validateAndStartApp(mode) {
     const savedWrong = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + filename)) || [];
     const isPermanentUnlocked = (localStorage.getItem(`lao_quiz_teacher_secret_${filename}`) === 'true') || teacherTempUnlocked;
 
-    if (mode === 'quiz' || mode === 'review_wrong') {
+    if (mode === 'quiz') {
         if (!isStudyPassed) {
             alert('⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານໄດ້!\nກະລຸນາອ່ານໂໝດອ່ານຮຽນຮູ້ (ໝວດ 1) ໃຫ້ຈົບທຸກຂໍ້ກ່ອນ.');
             return;
@@ -175,7 +104,7 @@ function validateAndStartApp(mode) {
             return;
         }
         if (savedWrong.length > 0 && !isPermanentUnlocked) {
-            alert(`⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານ ໝວດ 3 ໄດ້!\nທ່ານມີຂໍ້ທີ່ຕອບຜິດຄ້າງຢູ່ໃນ ໝວດ 4 ຈຳນວນ ${savedWrong.length} ຂໍ້\nກະລຸນາเข้าไปแก้ข้อผิดในหมวด 4 ให้หมดก่อนครับ!`);
+            alert(`⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານ ໝວດ 3 ໄດ້!\nທ່ານມີຂໍ້ທີ່ຕອບຜິດຄ້າງຢູ່ໃນ ໝວດ 4 ຈຳນວນ ${savedWrong.length} ຂໍ້\nກະລຸນາແກ້ໄຂຂໍ້ຜິດໃນໝວດ 4 ໃຫ້ໝົດກ່ອນ!`);
             return;
         }
     }
@@ -194,106 +123,14 @@ function validateAndStartApp(mode) {
     if (phoneInput) phoneInput.disabled = true;
     if (homeSelect) homeSelect.disabled = true;
 
-    let modeText = '';
-    if (mode === 'study') modeText = '📖 ໝວດ 1 (ໂໝດອ່ານຮຽນຮູ້)';
-    else if (mode === 'quiz') modeText = '📝 ໝວດ 2 (ໂໝດແບບທົດສອບ)';
-    else if (mode === 'random') modeText = '🔀 ໝວດ 3 (ໂໝດສະຫຼັບຄຳຖາມ)';
-    else if (mode === 'review_wrong') modeText = '🎯 ໝວດ 4 (ໂໝດແກ້ໄຂຂໍ້ຜິດ)';
-
-    sendClassStartingNotification(modeText);
     startApp(mode);
 }
 
 function sendToTelegramAPI(message) {
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-    const payload = {
-        chat_id: TELEGRAM_CHAT_ID,
-        text: message,
-        parse_mode: 'Markdown'
-    };
-
-    if (!navigator.onLine) {
-        saveToOfflineQueue(payload);
-        return;
-    }
-
-    fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    }).catch(() => {
-        saveToOfflineQueue(payload);
-    });
-}
-
-function sendResultsToTelegram(statusText) {
-    const name = localStorage.getItem('lao_quiz_student_name') || 'ບໍ່ລະບຸຊື່';
-    const age = localStorage.getItem('lao_quiz_student_age') || '-';
-    const phone = localStorage.getItem('lao_quiz_student_phone') || '-';
-    
-    const licenseType = currentCategoryFile.replace('.txt', '');
-    const totalRounds = getCompletedRounds(currentMode, currentCategoryFile);
-    const passedRounds = getPassedRounds(currentCategoryFile);
-    
-    let modeName = '';
-    if (currentMode === 'study') modeName = '📖 1. ໂໝດອ່ານຮຽນຮູ້';
-    else if (currentMode === 'quiz') modeName = '📝 2. ໂໝດແບບທົດສອບ';
-    else if (currentMode === 'random') modeName = '🔀 3. ໂໝດສະຫຼັບຄຳຖາມ';
-    else if (currentMode === 'review_wrong') modeName = '🎯 4. ໂໝດແກ້ໄຂຂໍ້ຜິດ';
-
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-                const mapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
-
-                const message = `📊 📉 **ລາຍງານຜົນການຮຽນ/ສອບເສັງ** 📉 📊\n` +
-                                `👤 ຊື່: ${name} (ອາຍຸ: ${age} ປີ)\n` +
-                                `📞 ເບີໂທ: ${phone}\n` +
-                                `🚗 ປະເພດໃບຂັບຂີ່: ${licenseType}\n` +
-                                `📌 ໝວດທີ່ເຮັດ: ${modeName}\n` +
-                                `📍 ຕຳແໜ່ງ GPS: [ຄລິກເບິ່ງແຜນທີ່ສົ່ງຜົນ](${mapsLink})\n` +
-                                `----------------------------------\n` +
-                                `✅ ຕອບຖືກ: ${correctCount} ຂໍ້\n` +
-                                `❌ ຕອບຜິດ: ${wrongCount} ຂໍ້\n` +
-                                `🏆 ສອບຜ່ານແລ້ວ: ${passedRounds} ຮອບ\n` +
-                                `🔄 ເຮັດຈົບລວມ: ${totalRounds} ຮອບ\n` +
-                                `📌 ສະຖານະ: ${statusText}`;
-                sendToTelegramAPI(message);
-            },
-            (error) => {
-                const message = `📊 📉 **ລາຍງານຜົນການຮຽນ/ສອບເສັງ** 📉 📊\n` +
-                                `👤 ຊື່: ${name} (ອາຍຸ: ${age} ປີ)\n` +
-                                `📞 ເບີໂທ: ${phone}\n` +
-                                `🚗 ປະເພດໃບຂັບຂີ່: ${licenseType}\n` +
-                                `📌 ໝວດທີ່ເຮັດ: ${modeName}\n` +
-                                `📍 ຕຳແໜ່ງ GPS: ⚠️ ປະຕິເສດການແບ່ງປັນຕຳແໜ່ງ\n` +
-                                `----------------------------------\n` +
-                                `✅ ຕອບຖືກ: ${correctCount} ຂໍ້\n` +
-                                `❌ ຕອບຜິດ: ${wrongCount} ຂໍ້\n` +
-                                `🏆 ສອບຜ່ານແລ້ວ: ${passedRounds} ຮອບ\n` +
-                                `🔄 ເຮັດຈົບລວມ: ${totalRounds} ຮອບ\n` +
-                                `📌 ສະຖານະ: ${statusText}`;
-                sendToTelegramAPI(message);
-            },
-            { enableHighAccuracy: true }
-        );
-    } else {
-        const message = `📊 📉 **ລາຍງານຜົນການຮຽນ/ສອບເສັງ** 📉 📊\n` +
-                        `👤 ຊື່: ${name} (ອາຍຸ: ${age} ປີ)\n` +
-                        `📞 ເບີໂທ: ${phone}\n` +
-                        `🚗 ປະເພດໃບຂັບຂີ່: ${licenseType}\n` +
-                        `📌 ໝວດທີ່ເຮັດ: ${modeName}\n` +
-                        `📍 ຕຳແໜ່ງ GPS: ⚠️ ເບຣົາເຊີບໍ່ຮອງຮັບ Geolocation\n` +
-                        `----------------------------------\n` +
-                        `✅ ຕອບຖືກ: ${correctCount} ຂໍ້\n` +
-                        `❌ ຕອບຜິດ: ${wrongCount} ຂໍ້\n` +
-                        `🏆 ສອບຜ່ານແລ້ວ: ${passedRounds} ຮອບ\n` +
-                        `🔄 ເຮັດຈົບລວມ: ${totalRounds} ຮອບ\n` +
-                        `📌 ສະຖານະ: ${statusText}`;
-        sendToTelegramAPI(message);
-    }
+    const payload = { chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: 'Markdown' };
+    if (!navigator.onLine) { saveToOfflineQueue(payload); return; }
+    fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(() => { saveToOfflineQueue(payload); });
 }
 
 function saveToOfflineQueue(payload) {
@@ -306,23 +143,10 @@ function processOfflineQueue() {
     if (!navigator.onLine) return;
     let queue = JSON.parse(localStorage.getItem('lao_quiz_offline_queue')) || [];
     if (queue.length === 0) return;
-
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
     const payload = queue.shift();
     localStorage.setItem('lao_quiz_offline_queue', JSON.stringify(queue));
-
-    fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    })
-    .then(() => {
-        processOfflineQueue();
-    })
-    .catch(() => {
-        queue.unshift(payload);
-        localStorage.setItem('lao_quiz_offline_queue', JSON.stringify(queue));
-    });
+    fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).then(() => { processOfflineQueue(); }).catch(() => { queue.unshift(payload); localStorage.setItem('lao_quiz_offline_queue', JSON.stringify(queue)); });
 }
 
 function shuffleArray(array) {
@@ -336,7 +160,6 @@ function shuffleArray(array) {
 function teacherUnlock() {
     const password = prompt("🔐 ໂໝດສຳລັບຄູສອນ\nກະລຸນາໃສ່ລະຫັດຜ່ານ:");
     if (password === null) return;
-
     const homeSelect = document.getElementById('homeCategory');
     const filename = homeSelect && homeSelect.value ? homeSelect.value : currentCategoryFile;
 
@@ -345,44 +168,27 @@ function teacherUnlock() {
         localStorage.removeItem(`lao_quiz_study_passed_${filename}`);
         localStorage.removeItem(`lao_quiz_quiz_passed_${filename}`);
         localStorage.removeItem(`lao_quiz_teacher_secret_${filename}`);
-
-        if (homeSelect) {
-            homeSelect.disabled = false;
-            homeSelect.style.backgroundColor = '#475569';
-        }
+        if (homeSelect) { homeSelect.disabled = false; homeSelect.style.backgroundColor = '#475569'; }
         localStorage.removeItem('lao_quiz_selected_category');
-
         checkHomeUnlockStatus();
-        updateSecretJumpButton();
-        alert("🎉 ປົດລັອກແບບ **ຊົ່ວຄາວ** ສຳເລັດ! (ສາມາດປ່ຽນປະເພດໃບຂັບຂີ່ໄດ້ແລ້ວ)");
-    } 
-    else if (password === "77116687") {
+        alert("🎉 ປົດລັອກແບບ **ຊົ່ວຄາວ** ສຳເລັດ!");
+    } else if (password === "77116687") {
         localStorage.setItem(`lao_quiz_study_passed_${filename}`, 'true');
         localStorage.setItem(`lao_quiz_quiz_passed_${filename}`, 'true');
         localStorage.setItem(`lao_quiz_teacher_secret_${filename}`, 'true');
         teacherTempUnlocked = false;
-
-        if (homeSelect) {
-            homeSelect.disabled = false;
-            homeSelect.style.backgroundColor = '#475569';
-        }
+        if (homeSelect) { homeSelect.disabled = false; homeSelect.style.backgroundColor = '#475569'; }
         localStorage.removeItem('lao_quiz_selected_category');
-
         checkHomeUnlockStatus();
-        updateSecretJumpButton();
-        alert("🎉 ປົດລັອກແບບ **ຖາວອນ** ສຳເລັດ! (ສາມາດປ່ຽນປະເພດໃບຂັບຂີ່ໄດ້ແລ້ວ)");
-    } 
-    else {
+        alert("🎉 ປົດລັອກແບບ **ຖາວອນ** ສຳເລັດ!");
+    } else {
         alert("❌ ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ!");
     }
 }
 
-// 🔒 ตรวจสอบการล็อกและปลดล็อก พร้อมแสดงจำนวนข้อในวงเล็บ
 function checkHomeUnlockStatus() {
     const homeSelect = document.getElementById('homeCategory');
-    if (homeSelect && homeSelect.value) {
-        currentCategoryFile = homeSelect.value;
-    }
+    if (homeSelect && homeSelect.value) { currentCategoryFile = homeSelect.value; }
     const filename = currentCategoryFile;
 
     const btn1 = document.getElementById('btn-mode-1');
@@ -398,10 +204,8 @@ function checkHomeUnlockStatus() {
     const hasWrongQuestions = savedWrong.length > 0;
     const isPermanentUnlocked = (localStorage.getItem(`lao_quiz_teacher_secret_${filename}`) === 'true') || teacherTempUnlocked;
 
-    // ดึงจำนวนข้อที่ทำค้างไว้มาแสดงในวงเล็บ
     const quizState = JSON.parse(localStorage.getItem('lao_quiz_state_quiz_' + filename)) || {};
     const quizAnsweredCount = quizState.userAnswers ? Object.keys(quizState.userAnswers).length : 0;
-
     const randomState = JSON.parse(localStorage.getItem('lao_quiz_state_random_' + filename)) || {};
     const randomAnsweredCount = randomState.userAnswers ? Object.keys(randomState.userAnswers).length : 0;
 
@@ -423,16 +227,11 @@ function checkHomeUnlockStatus() {
         }
     }
 
+    // 🔓 หมวด 4: ปลดล็อกถาวรตั้งแต่เริ่ม เปิดใช้งานได้ตลอด
     if (btn4) {
-        if (isStudyPassed) {
-            btn4.style.background = '#dc2626';
-            btn4.style.color = '#ffffff';
-            btn4.innerHTML = `🎯 4. ໂໝດແກ້ໄຂຂໍ້ຜິດ (${savedWrong.length} ຂໍ້)`;
-        } else {
-            btn4.style.background = '#64748b';
-            btn4.style.color = '#cbd5e1';
-            btn4.innerHTML = `🔒 4. ໂໝດແກ້ໄຂຂໍ້ຜິດ (${savedWrong.length} ຂໍ້) - [ຕ້ອງອ່ານໝວດ 1 ໃຫ້ຈົບກ່ອນ]`;
-        }
+        btn4.style.background = '#dc2626';
+        btn4.style.color = '#ffffff';
+        btn4.innerHTML = `🎯 4. ໂໝດແກ້ໄຂຂໍ້ຜິດ (${savedWrong.length} ຂໍ້)`;
     }
 
     if (btn3) {
@@ -468,162 +267,46 @@ function checkHomeUnlockStatus() {
     }
 }
 
-function updateSecretJumpButton() {
-    const filename = currentCategoryFile;
-    const isUnlocked = (localStorage.getItem(`lao_quiz_teacher_secret_${filename}`) === 'true') || teacherTempUnlocked;
-    let jumpBtn = document.getElementById('secret-jump-btn');
-    
-    if (isUnlocked) {
-        if (!jumpBtn) {
-            const subHeader = document.getElementById('sub-header-bar');
-            if (subHeader) {
-                jumpBtn = document.createElement('button');
-                jumpBtn.id = 'secret-jump-btn';
-                jumpBtn.innerHTML = '⚡ ໄປຂໍ້ສຸດທ້າຍ';
-                jumpBtn.onclick = jumpToLastQuestion;
-                jumpBtn.style.cssText = 'padding: 4px 8px; font-size: 0.75rem; font-weight: bold; background: #dc2626; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);';
-                subHeader.appendChild(jumpBtn);
-            }
-        } else {
-            jumpBtn.style.display = 'inline-block';
-        }
-    } else {
-        if (jumpBtn) jumpBtn.style.display = 'none';
-    }
-}
-
-function getCompletedRounds(mode, filename) {
-    if (mode === 'study' || mode === 'review_wrong') return 0;
-    const key = `lao_quiz_rounds_${mode}_${filename}`;
-    return parseInt(localStorage.getItem(key)) || 0;
-}
-
-function incrementCompletedRounds(mode, filename) {
-    if (mode === 'study' || mode === 'review_wrong') return;
-    const key = `lao_quiz_rounds_${mode}_${filename}`;
-    let rounds = parseInt(localStorage.getItem(key)) || 0;
-    rounds++;
-    localStorage.setItem(key, rounds);
-    return rounds;
-}
-
-function getPassedRounds(filename) {
-    const key = `lao_quiz_passed_${filename}`;
-    return parseInt(localStorage.getItem(key)) || 0;
-}
-
-function incrementPassedRounds(filename) {
-    const key = `lao_quiz_passed_${filename}`;
-    let passed = parseInt(localStorage.getItem(key)) || 0;
-    passed++;
-    localStorage.setItem(key, passed);
-    return passed;
-}
-
-function updateRoundBanner() {
-    const banner = document.getElementById('round-counter-banner');
-    const passedSpan = document.getElementById('passed-rounds-count');
-    const countSpan = document.getElementById('completed-rounds-count');
-    if (!banner || !passedSpan || !countSpan) return;
-
-    if (currentMode === 'quiz' || currentMode === 'random') {
-        banner.style.display = 'block';
-        passedSpan.innerText = getPassedRounds(currentCategoryFile);
-        countSpan.innerText = getCompletedRounds(currentMode, currentCategoryFile);
-    } else {
-        banner.style.display = 'none';
-    }
-}
-
 function startApp(mode) {
     const homeSelect = document.getElementById('homeCategory');
     if (homeSelect && homeSelect.value) {
         currentCategoryFile = homeSelect.value;
         localStorage.setItem('lao_quiz_selected_category', currentCategoryFile);
     }
-    const filename = currentCategoryFile;
-
-    const isStudyPassed = (localStorage.getItem(`lao_quiz_study_passed_${filename}`) === 'true') || teacherTempUnlocked || (localStorage.getItem(`lao_quiz_teacher_secret_${filename}`) === 'true');
-    const isQuizPassed = (localStorage.getItem(`lao_quiz_quiz_passed_${filename}`) === 'true') || teacherTempUnlocked || (localStorage.getItem(`lao_quiz_teacher_secret_${filename}`) === 'true');
-
-    if (mode === 'quiz' || mode === 'review_wrong') {
-        if (!isStudyPassed) {
-            alert('⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານໄດ້!\nກະລຸນາອ່ານໂໝດຮຽນຮູ້ (ໝວດ 1) ໃຫ້ຈົບທຸກຂໍ້ກ່ອນ.');
-            return;
-        }
-    }
-
-    if (mode === 'random') {
-        if (!isQuizPassed) {
-            alert('⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານໄດ້!\nກະລຸນາອ່ານແບບທົດສອບ (ໝວດ 2) ໃຫ້ຈົບທຸກຂໍ້ກ່ອນ');
-            return;
-        }
-    }
-
+    
     currentMode = mode;
     hasSkipped = false; 
     
     const innerSelect = document.getElementById('licenseCategory');
     if (innerSelect) innerSelect.value = currentCategoryFile;
 
-    const homeScreen = document.getElementById('home-screen');
-    if (homeScreen) homeScreen.style.display = 'none';
-
-    const wrapper = document.getElementById('main-quiz-wrapper');
-    if (wrapper) wrapper.style.display = 'flex';
+    document.getElementById('home-screen').style.display = 'none';
+    document.getElementById('main-quiz-wrapper').style.display = 'flex';
 
     const quizBox = document.getElementById('main-quiz-box');
-    if (currentMode === 'study') {
-        if (quizBox) { quizBox.style.backgroundColor = '#18181b'; quizBox.style.color = '#ffffff'; }
-    } else if (currentMode === 'quiz') {
-        if (quizBox) { quizBox.style.backgroundColor = '#713f12'; quizBox.style.color = '#ffffff'; }
-    } else if (currentMode === 'random') {
-        if (quizBox) { quizBox.style.backgroundColor = '#581c87'; quizBox.style.color = '#ffffff'; }
-    } else if (currentMode === 'review_wrong') {
-        if (quizBox) { quizBox.style.backgroundColor = '#ca8a04'; quizBox.style.color = '#ffffff'; }
-    }
+    if (currentMode === 'study') quizBox.style.backgroundColor = '#18181b';
+    else if (currentMode === 'quiz') quizBox.style.backgroundColor = '#713f12';
+    else if (currentMode === 'random') quizBox.style.backgroundColor = '#581c87';
+    else if (currentMode === 'review_wrong') quizBox.style.backgroundColor = '#ca8a04';
 
-    const scoreBoard = document.getElementById('live-score-board');
-    if (scoreBoard) {
-        scoreBoard.style.display = (currentMode === 'study') ? 'none' : 'flex';
-    }
-
-    updateRoundBanner();
+    document.getElementById('live-score-board').style.display = (currentMode === 'study') ? 'none' : 'flex';
     fetchQuestions(currentCategoryFile, false);
 }
 
 function goHome() {
-    const wrapper = document.getElementById('main-quiz-wrapper');
-    if (wrapper) wrapper.style.display = 'none';
-
-    const homeScreen = document.getElementById('home-screen');
-    if (homeScreen) homeScreen.style.display = 'flex';
-
-    const quizBox = document.getElementById('main-quiz-box');
-    if (quizBox) {
-        quizBox.style.backgroundColor = '#1e3a8a'; 
-        quizBox.style.color = '#ffffff';
-    }
+    document.getElementById('main-quiz-wrapper').style.display = 'none';
+    document.getElementById('home-screen').style.display = 'flex';
+    document.getElementById('main-quiz-box').style.backgroundColor = '#1e3a8a'; 
     checkHomeUnlockStatus(); 
 }
 
 async function fetchQuestions(filename, isRestoring = false) {
     currentCategoryFile = filename;
-    
-    const resultScreen = document.getElementById('result-screen');
-    if (resultScreen) resultScreen.style.display = 'none';
-
-    const quizScreen = document.getElementById('quiz-screen');
-    if (quizScreen) quizScreen.style.display = 'flex';
-
-    const questionText = document.getElementById('question-text');
-    if (questionText) questionText.innerText = 'ກຳລັງໂຫຼດຂໍ້ສອບຈາກ ' + filename + '...';
-
-    const optionsContainer = document.getElementById('options-container');
-    if (optionsContainer) optionsContainer.innerHTML = '';
-
-    const imgContainer = document.getElementById('image-container');
-    if (imgContainer) imgContainer.innerHTML = '';
+    document.getElementById('result-screen').style.display = 'none';
+    document.getElementById('quiz-screen').style.display = 'flex';
+    document.getElementById('question-text').innerText = 'ກຳລັງໂຫຼດຂໍ້ສອບຈາກ ' + filename + '...';
+    document.getElementById('options-container').innerHTML = '';
+    document.getElementById('image-container').innerHTML = '';
     
     try {
         if (currentMode === 'review_wrong') {
@@ -649,9 +332,7 @@ async function fetchQuestions(filename, isRestoring = false) {
                     userAnswers = data.userAnswers || {};
                     correctCount = data.correctCount || 0;
                     wrongCount = data.wrongCount || 0;
-                    if (currentMode === 'random' && data.quizQuestions) {
-                        quizQuestions = data.quizQuestions;
-                    }
+                    if (currentMode === 'random' && data.quizQuestions) quizQuestions = data.quizQuestions;
                 } else {
                     currentQuestionIndex = 0;
                     userAnswers = {};
@@ -667,8 +348,6 @@ async function fetchQuestions(filename, isRestoring = false) {
         
         isAnswered = (currentMode === 'study') ? true : (userAnswers[currentQuestionIndex] !== undefined);
         updateLiveScore();
-        updateRoundBanner();
-        updateSecretJumpButton();
         
         if (quizQuestions.length > 0) {
             loadQuestion();
@@ -676,77 +355,50 @@ async function fetchQuestions(filename, isRestoring = false) {
             if (currentMode === 'review_wrong') {
                 showReviewWrongCompleteScreen(); 
             } else {
-                if (questionText) questionText.innerText = 'ບໍ່ມີຂໍ້ສອບ';
+                document.getElementById('question-text').innerText = 'ບໍ່ມີຂໍ້ສອບ';
             }
-            const nextBtn = document.getElementById('btn-next');
-            if(nextBtn) nextBtn.style.display = 'none';
+            document.getElementById('btn-next').style.display = 'none';
         }
     } catch (error) {
         console.error(error);
-        if (questionText) questionText.innerText = 'เกิดข้อผิดพลาดในการโหลดไฟล์ ' + filename;
+        document.getElementById('question-text').innerText = 'เกิดข้อผิดพลาดในการโหลดไฟล์ ' + filename;
     }
 }
 
 function parseCsvInsideTxt(text) {
     const questions = [];
     const lines = text.split(/\r?\n/);
-
     lines.forEach((line) => {
         if (!line.trim()) return;
-
         let parts = [];
         let current = '';
         let inQuotes = false;
-        
         for (let i = 0; i < line.length; i++) {
             let char = line[i];
-            if (char === '"') {
-                inQuotes = !inQuotes;
-            } else if (char === ',' && !inQuotes) {
-                parts.push(current.trim().replace(/^"|"$/g, ''));
-                current = '';
-            } else {
-                current += char;
-            }
+            if (char === '"') inQuotes = !inQuotes;
+            else if (char === ',' && !inQuotes) { parts.push(current.trim().replace(/^"|"$/g, '')); current = ''; }
+            else current += char;
         }
         parts.push(current.trim().replace(/^"|"$/g, ''));
-
         if (parts.length < 6) return;
-
         const qText = parts[0];
         let ansNum = 1;
         try { ansNum = parseInt(parts[1]) || 1; } catch(e) { ansNum = 1; }
         const ansIndex = ansNum - 1;
-
         let options = [];
         for (let i = 2; i <= 5; i++) {
-            if (parts[i]) {
-                let opt = parts[i];
-                if (opt && opt !== '-') options.push(opt);
-            }
+            if (parts[i]) { let opt = parts[i]; if (opt && opt !== '-') options.push(opt); }
         }
-
         let imagePath = null;
         for (let i = 0; i < parts.length; i++) {
             let p = parts[i].trim().replace(/^"|"$/g, '');
             let lowerP = p.toLowerCase();
-            if (lowerP.endsWith('.png') || lowerP.endsWith('.jpg') || lowerP.endsWith('.jpeg')) {
-                imagePath = p;
-                break;
-            }
+            if (lowerP.endsWith('.png') || lowerP.endsWith('.jpg') || lowerP.endsWith('.jpeg')) { imagePath = p; break; }
         }
-
         if (qText && options.length > 0) {
-            questions.push({
-                id: questions.length + 1,
-                question: qText,
-                image: imagePath,
-                options: options,
-                answer: ansIndex
-            });
+            questions.push({ id: questions.length + 1, question: qText, image: imagePath, options: options, answer: ansIndex });
         }
     });
-
     return questions;
 }
 
@@ -754,113 +406,77 @@ function changeCategory() {
     const selectElement = document.getElementById('licenseCategory');
     if (!selectElement) return;
     const selectedFile = selectElement.value;
-    
     const homeSelect = document.getElementById('homeCategory');
     if (homeSelect && !homeSelect.disabled) homeSelect.value = selectedFile;
-
     currentCategoryFile = selectedFile;
-    if (homeSelect && !homeSelect.disabled) {
-        localStorage.setItem('lao_quiz_selected_category', selectedFile);
-    }
+    if (homeSelect && !homeSelect.disabled) localStorage.setItem('lao_quiz_selected_category', selectedFile);
     checkHomeUnlockStatus();
     fetchQuestions(selectedFile, false);
 }
 
 function saveQuizState() {
     if (currentMode === 'review_wrong') return;
-    if (hasSkipped) {
-        localStorage.removeItem('lao_quiz_state_' + currentMode + '_' + currentCategoryFile);
-        return;
-    }
-    const stateData = {
-        currentQuestionIndex: currentQuestionIndex,
-        userAnswers: userAnswers,
-        correctCount: correctCount,
-        wrongCount: wrongCount,
-        quizQuestions: (currentMode === 'random') ? quizQuestions : undefined
-    };
+    if (hasSkipped) { localStorage.removeItem('lao_quiz_state_' + currentMode + '_' + currentCategoryFile); return; }
+    const stateData = { currentQuestionIndex, userAnswers, correctCount, wrongCount, quizQuestions: (currentMode === 'random') ? quizQuestions : undefined };
     localStorage.setItem('lao_quiz_state_' + currentMode + '_' + currentCategoryFile, JSON.stringify(stateData));
 }
 
 function loadQuestion() {
     if (quizQuestions.length === 0) return;
-
-    const resultScreen = document.getElementById('result-screen');
-    if (resultScreen) resultScreen.style.display = 'none';
-
-    const quizScreen = document.getElementById('quiz-screen');
-    if (quizScreen) quizScreen.style.display = 'flex';
-
-    const nextBtn = document.getElementById('btn-next');
-    if(nextBtn) nextBtn.style.display = 'block';
+    document.getElementById('result-screen').style.display = 'none';
+    document.getElementById('quiz-screen').style.display = 'flex';
+    document.getElementById('btn-next').style.display = 'block';
 
     const q = quizQuestions[currentQuestionIndex];
     isAnswered = (currentMode === 'study') ? true : (userAnswers[currentQuestionIndex] !== undefined);
 
-    const qCount = document.getElementById('question-count');
-    if (qCount) qCount.innerText = `ຄຳຖາມທີ ${currentQuestionIndex + 1} ຈາກ ${quizQuestions.length}`;
-
-    const qText = document.getElementById('question-text');
-    if (qText) {
-        qText.innerText = q.question;
-        qText.style.fontSize = '1.15rem';
-        qText.style.lineHeight = '1.5';
-        qText.style.fontWeight = 'bold';
-    }
-
-    const imgContainer = document.getElementById('image-container');
-    if (imgContainer) {
-        imgContainer.innerHTML = q.image ? `<img src="${q.image}" alt="Traffic Sign" style="max-height: 180px;">` : '';
-    }
+    document.getElementById('question-count').innerText = `ຄຳຖາມທີ ${currentQuestionIndex + 1} ຈາກ ${quizQuestions.length}`;
+    document.getElementById('question-text').innerText = q.question;
+    document.getElementById('image-container').innerHTML = q.image ? `<img src="${q.image}" alt="Traffic Sign" style="max-height: 180px;">` : '';
 
     const optionsContainer = document.getElementById('options-container');
-    if (optionsContainer) {
-        optionsContainer.innerHTML = '';
-        const laoLetters = ['ກ', 'ຂ', 'ຄ', 'ງ'];
+    optionsContainer.innerHTML = '';
+    const laoLetters = ['ກ', 'ຂ', 'ຄ', 'ງ'];
 
-        q.options.forEach((opt, idx) => {
-            const isChecked = userAnswers[currentQuestionIndex] === idx;
-            
-            let optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background: transparent !important; border: 1px solid rgba(255, 255, 255, 0.25) !important;";
+    q.options.forEach((opt, idx) => {
+        const isChecked = userAnswers[currentQuestionIndex] === idx;
+        let optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background: transparent !important; border: 1px solid rgba(255, 255, 255, 0.25) !important;";
 
-            if (currentMode === 'study') {
-                if (idx === q.answer) optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background-color: #15803d !important; border: 1px solid #16a34a !important;";
-            } else {
-                if (isAnswered) {
-                    if (idx === q.answer) optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background-color: #15803d !important; border: 1px solid #16a34a !important;"; 
-                    else if (isChecked && idx !== q.answer) optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background-color: #b91c1c !important; border: 1px solid #dc2626 !important;"; 
-                }
+        if (currentMode === 'study') {
+            if (idx === q.answer) optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background-color: #15803d !important; border: 1px solid #16a34a !important;";
+        } else {
+            if (isAnswered) {
+                if (idx === q.answer) optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background-color: #15803d !important; border: 1px solid #16a34a !important;"; 
+                else if (isChecked && idx !== q.answer) optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background-color: #b91c1c !important; border: 1px solid #dc2626 !important;"; 
             }
-
-            const letterLabel = laoLetters[idx] || (idx + 1);
-            optionsContainer.innerHTML += `
-                <label class="option-label" onclick="selectOption(${idx})" style="${optionStyle}">
-                    <input type="radio" name="option" value="${idx}" ${isChecked ? 'checked' : ''} ${isAnswered && currentMode !== 'study' ? 'disabled' : ''} style="display: none;">
-                    <span style="margin-right: 10px; color: #ffffff; font-size: 1.1rem;">${letterLabel}.</span>
-                    <span style="color: #ffffff;">${opt}</span>
-                </label>
-            `;
-        });
-    }
-
-    if (nextBtn) {
-        if (currentQuestionIndex === quizQuestions.length - 1) {
-            nextBtn.innerText = (currentMode === 'study') ? 'ເກັງຫລາຍ ອ່ານຈົບແລ້ວ ກົດໄປຕໍ່' : 'ສົ່ງຂໍ້ສອບ';
-            nextBtn.className = 'btn-submit';
-        } else {
-            nextBtn.innerText = 'ຕໍ່ໄປ';
-            nextBtn.className = 'btn-next';
         }
 
-        if (currentMode !== 'study' && !isAnswered) {
-            nextBtn.style.opacity = '0.5';
-            nextBtn.style.cursor = 'not-allowed';
-        } else {
-            nextBtn.style.opacity = '1';
-            nextBtn.style.cursor = 'pointer';
-        }
+        const letterLabel = laoLetters[idx] || (idx + 1);
+        optionsContainer.innerHTML += `
+            <label class="option-label" onclick="selectOption(${idx})" style="${optionStyle}">
+                <input type="radio" name="option" value="${idx}" ${isChecked ? 'checked' : ''} ${isAnswered && currentMode !== 'study' ? 'disabled' : ''} style="display: none;">
+                <span style="margin-right: 10px; color: #ffffff; font-size: 1.1rem;">${letterLabel}.</span>
+                <span style="color: #ffffff;">${opt}</span>
+            </label>
+        `;
+    });
+
+    const nextBtn = document.getElementById('btn-next');
+    if (currentQuestionIndex === quizQuestions.length - 1) {
+        nextBtn.innerText = (currentMode === 'study') ? 'ເກັງຫລາຍ ອ່ານຈົບແລ້ວ ກົດໄປຕໍ່' : 'ສົ່ງຂໍ້ສອບ';
+        nextBtn.className = 'btn-submit';
+    } else {
+        nextBtn.innerText = 'ຕໍ່ໄປ';
+        nextBtn.className = 'btn-next';
     }
 
+    if (currentMode !== 'study' && !isAnswered) {
+        nextBtn.style.opacity = '0.5';
+        nextBtn.style.cursor = 'not-allowed';
+    } else {
+        nextBtn.style.opacity = '1';
+        nextBtn.style.cursor = 'pointer';
+    }
     saveQuizState();
 }
 
@@ -897,10 +513,8 @@ function selectOption(index) {
 }
 
 function updateLiveScore() {
-    const correctEl = document.getElementById('live-correct');
-    const wrongEl = document.getElementById('live-wrong');
-    if (correctEl) correctEl.innerText = correctCount;
-    if (wrongEl) wrongEl.innerText = wrongCount;
+    document.getElementById('live-correct').innerText = correctCount;
+    document.getElementById('live-wrong').innerText = wrongCount;
 }
 
 function nextQuestion() {
@@ -931,111 +545,66 @@ function nextQuestion() {
         } else if (currentMode === 'review_wrong') {
             let remainingWrong = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + currentCategoryFile)) || [];
             if (remainingWrong.length > 0) {
-                alert(`⚠️ ຍັງມີຂໍ້ທີ່ຕອບຜິດຄ້າງຢູ່ ${remainingWrong.length} ຂໍ້! ລະບົບຈະວນກັບມາໃຫ້ແກ້ຈົນກວ່າຈະຖືກໝົດ`);
+                alert(`⚠️ ຍັງມີຂໍ້ທີ່ຕອບຜິດຄ້າງຢູ່ ${remainingWrong.length} ຂໍ້!`);
                 startApp('review_wrong'); 
             } else {
                 showReviewWrongCompleteScreen(); 
             }
-        } else {
-            showResults();
         }
     }
 }
 
-function jumpToLastQuestion() {
-    if (quizQuestions.length === 0) return;
-    hasSkipped = true;
-    currentQuestionIndex = quizQuestions.length - 1;
-    loadQuestion();
-}
-
 function showStudyCompleteScreen() {
-    const quizScreen = document.getElementById('quiz-screen');
-    if (quizScreen) quizScreen.style.display = 'none';
-
-    const resultScreen = document.getElementById('result-screen');
-    if (resultScreen) resultScreen.style.display = 'block';
-    
-    const finalScore = document.getElementById('final-score');
-    const scoreMsg = document.getElementById('score-message');
-    const actionButtons = document.getElementById('result-action-buttons');
-
-    if (finalScore) finalScore.innerHTML = '🎉 ທ່ານອ່ານທົບທວນຄຳຖາມຈົບໝົດທຸກຂໍ້ແລ້ວ!';
-    if (scoreMsg) scoreMsg.innerHTML = 'ຍິນດີດ້ວຍ! ທ່ານໄດ້ປົດລັອກ ໝວດທີ 2 (ແບບທົດສອບ) ແລະ ໝວດທີ 4 (ແກ້ໄຂຂໍ້ຜິດ) ແລ້ວ!';
-
-    if (actionButtons) {
-        actionButtons.innerHTML = `
-            <button onclick="goHome()" style="padding: 10px; font-size: 0.85rem; font-weight: bold; background: #475569; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-                🏠 ກຼັບຄືນໜ້າທຳອິດ (ໄປເຮັດໝວດ 2)
-            </button>
-        `;
-    }
+    document.getElementById('quiz-screen').style.display = 'none';
+    document.getElementById('result-screen').style.display = 'block';
+    document.getElementById('final-score').innerHTML = '🎉 ທ່ານອ່ານທົບທວນຄຳຖາມຈົບໝົດທຸກຂໍ້ແລ້ວ!';
+    document.getElementById('score-message').innerHTML = 'ຍິນດີດ້ວຍ! ທ່ານໄດ້ປົດລັອກໝວດທີ 2 (ແບບທົດສອບ) ແລ້ວ!';
+    document.getElementById('result-action-buttons').innerHTML = `
+        <button onclick="goHome()" style="padding: 10px; font-size: 0.85rem; font-weight: bold; background: #475569; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
+            🏠 ກຼັບຄືນໜ້າທຳອິດ
+        </button>
+    `;
 }
 
 function showReviewWrongCompleteScreen() {
-    const quizScreen = document.getElementById('quiz-screen');
-    if (quizScreen) quizScreen.style.display = 'none';
-
-    const resultScreen = document.getElementById('result-screen');
-    if (resultScreen) resultScreen.style.display = 'block';
-    
-    const finalScore = document.getElementById('final-score');
-    const scoreMsg = document.getElementById('score-message');
-    const actionButtons = document.getElementById('result-action-buttons');
-
-    if (finalScore) finalScore.innerHTML = '🎉 ຍິນດີນຳ ທ່ານໄດ້ແກ້ໄຂທັງໝົດຖືກຕ້ອງຄົບແລ້ວ';
-    if (scoreMsg) scoreMsg.innerHTML = 'ສຸດຍອດ! ທ່ານໄດ້ຕອບຖືກຄົບທຸກຂໍ້ທີ່ເຄຍເຮັດຜິດໄວ້ແລ້ວ (ລະບົບປົດລັອກໝວດ 3 ແລະ 5 ແລ້ວ)';
-
-    if (actionButtons) {
-        actionButtons.innerHTML = `
-            <button onclick="goHome()" style="padding: 10px; font-size: 0.85rem; font-weight: bold; background: #475569; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-                🏠 ກຼັບຄືນໜ້າທຳອິດ (ເລືອກໝວດອື່ນ)
-            </button>
-        `;
-    }
+    document.getElementById('quiz-screen').style.display = 'none';
+    document.getElementById('result-screen').style.display = 'block';
+    document.getElementById('final-score').innerHTML = '🎉 ຍິນດີນຳ ທ່ານໄດ້ແກ້ໄຂທັງໝົດຖືກຕ້ອງຄົບແລ້ວ';
+    document.getElementById('score-message').innerHTML = 'ສຸດຍອດ! ທ່ານໄດ້ຕອບຖືກຄົບທຸກຂໍ້ທີ່ເຄຍເຮັດຜິດໄວ້ແລ້ວ';
+    document.getElementById('result-action-buttons').innerHTML = `
+        <button onclick="goHome()" style="padding: 10px; font-size: 0.85rem; font-weight: bold; background: #475569; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
+            🏠 ກຼັບຄືນໜ້າທຳອິດ
+        </button>
+    `;
 }
 
 function showResults() {
-    const quizScreen = document.getElementById('quiz-screen');
-    if (quizScreen) quizScreen.style.display = 'none';
-
-    const resultScreen = document.getElementById('result-screen');
-    if (resultScreen) resultScreen.style.display = 'block';
+    document.getElementById('quiz-screen').style.display = 'none';
+    document.getElementById('result-screen').style.display = 'block';
     
-    const actionButtons = document.getElementById('result-action-buttons');
-    let reviewButtonHtml = '';
-
-    const finalScore = document.getElementById('final-score');
-    const scoreMsg = document.getElementById('score-message');
-
-    if (finalScore) finalScore.innerText = `ຜິດພາດ: ${wrongCount} ຂໍ້ (ຈາກ ${quizQuestions.length} ຂໍ້)`;
+    document.getElementById('final-score').innerText = `ຜິດພາດ: ${wrongCount} ຂໍ້ (ຈາກ ${quizQuestions.length} ຂໍ້)`;
     const isPassed = wrongCount <= 10;
-    const msg = isPassed
-        ? `🎉 ຍິນດີດ້ວຍ! ທ່ານຜ່ານການສອບເສັງ (ຜິດ ${wrongCount} ຂໍ້)`
-        : `❌ ທ່ານບໍ່ຜ່ານການສອບເສັງ (ຜິດ ${wrongCount} ຂໍ້)`;
-    if (scoreMsg) scoreMsg.innerText = msg;
+    document.getElementById('score-message').innerText = isPassed ? `🎉 ຍິນດີດ້ວຍ! ທ່ານຜ່ານการສອບເສັງ` : `❌ ທ່ານບໍ່ຜ່ານการສອບເສັງ`;
 
     let currentWrongSaved = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + currentCategoryFile)) || [];
-    
+    let reviewButtonHtml = '';
     if (currentWrongSaved.length > 0) {
         reviewButtonHtml = `
             <button onclick="startApp('review_wrong')" style="padding: 12px; font-size: 0.95rem; font-weight: bold; background: #dc2626; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-                🎯 ໄປແກ້ສະເພາະຂໍ້ທີ່ຜິດ (${currentWrongSaved.length} ຂໍ້) - [ບັງຄັບ]
+                🎯 ໄປແກ້ສະເພາະຂໍ້ທີ່ຜິດ (${currentWrongSaved.length} ຂໍ້)
             </button>
         `;
     }
 
-    if (actionButtons) {
-        actionButtons.innerHTML = `
-            ${reviewButtonHtml}
-            ${currentWrongSaved.length === 0 ? `
-            <button onclick="goHome()" style="padding: 10px; font-size: 0.85rem; font-weight: bold; background: #475569; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-                🏠 ກຼັບຄືນໜ້າທຳອິດ
-            </button>` : ''}
-        `;
-    }
+    document.getElementById('result-action-buttons').innerHTML = `
+        ${reviewButtonHtml}
+        <button onclick="goHome()" style="padding: 10px; font-size: 0.85rem; font-weight: bold; background: #475569; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
+            🏠 ກຼັບຄືນໜ້າທຳອິດ
+        </button>
+    `;
 }
 
+// 🔓 ฟังก์ชันดักเช็คเปิด/ล็อก หมวด 5 ป้องกันการกดเข้าถ้ายังไม่ผ่านหมวด 2
 function openCategory5() {
     const nameInput = document.getElementById('studentName');
     const ageInput = document.getElementById('studentAge');
@@ -1052,16 +621,18 @@ function openCategory5() {
         return;
     }
 
-    let selectedCategory = homeSelect ? homeSelect.value : '';
-    if (!selectedCategory) {
-        selectedCategory = localStorage.getItem('lao_quiz_selected_category') || 'ABC.txt';
-    }
-
+    let selectedCategory = homeSelect ? homeSelect.value : (localStorage.getItem('lao_quiz_selected_category') || 'ABC.txt');
+    const isQuizPassed = (localStorage.getItem(`lao_quiz_quiz_passed_${selectedCategory}`) === 'true') || teacherTempUnlocked || (localStorage.getItem(`lao_quiz_teacher_secret_${selectedCategory}`) === 'true');
     const savedWrong = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + selectedCategory)) || [];
     const isPermanentUnlocked = (localStorage.getItem(`lao_quiz_teacher_secret_${selectedCategory}`) === 'true') || teacherTempUnlocked;
 
+    if (!isQuizPassed) {
+        alert('⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານ ໝວດ 5 ได้!\nກະລຸນາເຮັດແບບທົດສອບ (ໝວດ 2) ให้เสร็จก่อนครับ.');
+        return;
+    }
+
     if (savedWrong.length > 0 && !isPermanentUnlocked) {
-        alert(`⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານ ໝວດ 5 ได้!\nທ່ານມີຂໍ້ທີ່ຕອບຜິດຄ້າງຢູ່ໃນ ໝວດ 4 ຈຳນວນ ${savedWrong.length} ຂໍ້\nກະລຸນາเข้าไปแก้ข้อผิดให้หมดก่อนครับ!`);
+        alert(`⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານ ໝວດ 5 ได้!\nທ່ານມີຂໍ້ທີ່ຕອບຜິດຄ້າງຢູ່ໃນ ໝວດ 4 ຈຳນວນ ${savedWrong.length} ຂໍ້\nກະລຸນາเข้าไปแก้ข้อผิดในหมวด 4 ให้หมดก่อนครับ!`);
         return;
     }
 
@@ -1070,7 +641,5 @@ function openCategory5() {
     localStorage.setItem('lao_quiz_student_phone', phone);
     localStorage.setItem('lao_quiz_selected_category', selectedCategory);
 
-    setTimeout(() => {
-        window.location.href = 'category5.html';
-    }, 300);
+    setTimeout(() => { window.location.href = 'category5.html'; }, 300);
 }

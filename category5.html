@@ -365,7 +365,7 @@
         </div>
 
         <div class="cat5-bottom-bar">
-            <button onclick="cat5PrevOrSubmit()" id="cat5-back-submit-btn" class="cat5-img-btn" title="กลับ / ส่งຂໍ້สอบ">
+            <button onclick="cat5PrevOrSubmit()" id="cat5-back-submit-btn" class="cat5-img-btn" title="กลับ / ส่งข้อสอบ">
                 <img id="cat5-back-submit-img" src="back.png" alt="ກັບ" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'45\'><rect width=\'100%\' height=\'100%\' fill=\'%23dc2626\' rx=\'6\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'13\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ກັບ</text></svg>'">
             </button>
             <button onclick="cat5SelectOption(0)" class="cat5-img-btn" title="เลือก ก">
@@ -380,7 +380,7 @@
             <button onclick="cat5SelectOption(3)" class="cat5-img-btn" title="เลือก ง">
                 <img src="d.png" alt="ງ" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'55\' height=\'45\'><circle cx=\'27\' cy=\'22\' r=\'20\' fill=\'%23dc2626\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'14\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ງ</text></svg>'">
             </button>
-            <button onclick="cat5NextQuestion()" class="cat5-img-btn" title="ຂໍ້ถัดไป / ข้าม">
+            <button onclick="cat5NextQuestion()" class="cat5-img-btn" title="ข้อถัดไป / ข้าม">
                 <img src="next.png" alt="ຂ້າມ" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'45\'><rect width=\'100%\' height=\'100%\' fill=\'%230284c7\' rx=\'6\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'13\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ຂ້າມ</text></svg>'">
             </button>
         </div>
@@ -475,7 +475,7 @@
                 
                 if (!masterBank || masterBank.length === 0) {
                     const response = await fetch(cat5Config.fileName);
-                    if (!response.ok) throw new Error('ไม่พบไฟล์ຂໍ້สอบ');
+                    if (!response.ok) throw new Error('ไม่พบไฟล์ข้อสอบ');
                     const textData = await response.text();
                     masterBank = parseCsvInsideTxt(textData);
                     shuffleArray(masterBank);
@@ -511,7 +511,7 @@
 
             } catch (e) {
                 console.error(e);
-                document.getElementById('cat5-question-text').innerText = 'เกิดข้อผิดพลาดในการโหลดไฟล์ຂໍ້สอบ (' + cat5Config.fileName + ')';
+                document.getElementById('cat5-question-text').innerText = 'เกิดข้อผิดพลาดในการโหลดไฟล์ข้อสอบ (' + cat5Config.fileName + ')';
             }
         }
 
@@ -709,7 +709,7 @@
             
             const progressEl = document.getElementById('cat5-progress-text');
             if (progressEl) {
-                progressEl.innerText = `ທົດສອບເສັງໃບຂັບຂີ່ (ຄຳຖາມທີ ${cat5Index + 1} จาก ${cat5Questions.length})`;
+                progressEl.innerText = `ທົດສອບເສັງໃບຂັບຂີ່ (ຄຳຖາມທີ ${cat5Index + 1} ຈາກ ${cat5Questions.length})`;
             }
 
             const q = cat5Questions[cat5Index];
@@ -749,7 +749,7 @@
             cat5Answers[cat5Index] = optIdx;
             captureCat5Snapshot(cat5Index + 1);
 
-            // 🎯 บันทึกข้อผิดลงใน key ของหมวด 4 ทันทีที่ตอบผิด
+            // 🎯 บันทึกข้อผิดลงในคีย์ของหมวด 4 ทันทีที่ตอบผิด
             const q = cat5Questions[cat5Index];
             const keyName = 'lao_quiz_wrong_' + cat5Config.fileName;
             let existingWrong = JSON.parse(localStorage.getItem(keyName) || '[]');
@@ -864,7 +864,7 @@
 
             actionButtonsHtml += `
                 <button onclick="window.location.reload()" style="padding: 12px; font-size: 0.95rem; font-weight: bold; background: #0284c7; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-                    🔄 ໄປทำข้อสอบชุดถัดไปต่อ
+                    🔄 ໄປເຮັດຂໍ້ສອບຊຸດຖັດໄປຕໍ່
                 </button>
                 <button onclick="window.location.href='index.html'" style="padding: 10px; font-size: 0.85rem; font-weight: bold; background: #475569; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
                     🏠 ກຼັບຄືນໜ້າທຳອິດ
@@ -932,7 +932,7 @@
 
             actionButtonsHtml += `
                 <button onclick="localStorage.removeItem('cat5_master_bank_${cat5Config.fileName}'); localStorage.removeItem('cat5_current_batch_${cat5Config.fileName}'); localStorage.removeItem('cat5_history_${cat5Config.fileName}'); window.location.reload();" style="padding: 12px; font-size: 0.95rem; font-weight: bold; background: #0284c7; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-                    🔄 ເລີ່ມສອບຄลังใหม่ทั้งหมด
+                    🔄 เริ่มสอบคลังใหม่ทั้งหมด
                 </button>
                 <button onclick="window.location.href='index.html'" style="padding: 10px; font-size: 0.85rem; font-weight: bold; background: #475569; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
                     🏠 ກຼັບຄືນໜ້າທຳອິດ

@@ -85,7 +85,6 @@ function captureCat5Snapshot(qNum) {
     renderCat5MiniGallery();
 }
 
-// แสดงตารางรูปถ่ายทางขวา
 function renderCat5MiniGallery() {
     const gallery = document.getElementById('cat5-snapshots-gallery');
     if (!gallery) return;
@@ -100,7 +99,6 @@ function renderCat5MiniGallery() {
     });
 }
 
-// 🔀 โหลดและสุ่มคำถามจากไฟล์ข้อสอบ
 async function loadCat5Questions() {
     try {
         const response = await fetch(cat5Config.fileName);
@@ -244,7 +242,6 @@ function renderCat5Question() {
     if (cat5Questions.length === 0) return;
     const q = cat5Questions[cat5Index];
 
-    // ✂️ ตัดคำว่า "ຂໍ້ທີ X:" ออก ให้แสดงเฉพาะเนื้อหาคำถามโดยตรง
     document.getElementById('cat5-question-text').innerText = q.question;
     
     const imgBox = document.getElementById('cat5-image-container');
@@ -282,6 +279,19 @@ function cat5SelectOption(optIdx) {
 
     cat5Answers[cat5Index] = optIdx;
     captureCat5Snapshot(cat5Index + 1);
+
+    // 🎯 บันทึกและผสานข้อผิดลงหมวด 4 ทันทีที่ตอบผิด พร้อมซิงค์เรียลไทม์
+    const q = cat5Questions[cat5Index];
+    const keyName = 'lao_quiz_wrong_' + cat5Config.fileName;
+    let existingWrong = JSON.parse(localStorage.getItem(keyName) || '[]');
+
+    if (optIdx !== q.answer) {
+        if (!existingWrong.some(e => e.question === q.question)) {
+            existingWrong.push(q);
+            localStorage.setItem(keyName, JSON.stringify(existingWrong));
+        }
+    }
+
     renderCat5Question();
 
     setTimeout(() => {
@@ -322,8 +332,18 @@ function cat5EvaluateAndShowResults() {
         }
     });
 
+    // 🎯 ผสานข้อมูลข้อผิดทั้งหมดลงในคีย์หมวด 4 อย่างสมบูรณ์
+    const keyName = 'lao_quiz_wrong_' + cat5Config.fileName;
+    let existingWrong = JSON.parse(localStorage.getItem(keyName) || '[]');
+    
+    wrongList.forEach(w => {
+        if (!existingWrong.some(ew => ew.question === w.question)) {
+            existingWrong.push(w);
+        }
+    });
+    localStorage.setItem(keyName, JSON.stringify(existingWrong));
+
     const isPassed = wrongCount <= cat5Config.maxWrong;
-    localStorage.setItem('lao_quiz_wrong_' + cat5Config.fileName, JSON.stringify(wrongList));
 
     const examGrid = document.querySelector('.cat5-exam-grid');
     const topHeader = document.querySelector('.cat5-top-header');
