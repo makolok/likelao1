@@ -37,15 +37,15 @@
             flex-shrink: 0 !important;
         }
 
-        .cat5-img-btn {
-            background: none !important;
-            border: none !important;
-            cursor: pointer !important;
-            padding: 0 !important;
-            min-width: 65px !important;
-            width: 75px !important;
-            height: 55px !important;
-        }
+.cat5-img-btn {
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    flex: 1 !important;        /* 👈 ให้ปุ่มขยายขนาดเท่าๆ กันและยืดหยุ่นพอดีจอ */
+    max-width: 55px !important;/* 👈 จำกัดความกว้างไม่ให้ใหญ่เกินไปจนล้น */
+    height: 48px !important;   /* 👈 ปรับความสูงให้พอดีสวยงาม */
+}
 
         .cat5-img-btn img {
             width: 100% !important;
