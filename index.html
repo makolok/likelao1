@@ -37,23 +37,26 @@
         }
 
 .cat5-img-btn {
-    background: none !important;
+    background: transparent !important; /* บังคับโปร่งใสแบบเด็ดขาด */
+    background-color: transparent !important;
     border: none !important;
     cursor: pointer !important;
     padding: 0 !important;
-    flex: 1 !important;        /* 👈 ให้ปุ่มขยายขนาดเท่าๆ กันและยืดหยุ่นพอดีจอ */
-    max-width: 55px !important;/* 👈 จำกัดความกว้างไม่ให้ใหญ่เกินไปจนล้น */
-    height: 80px !important;   /* 👈 ปรับความสูงให้พอดีสวยงาม */
+    flex: 1 !important;
+    max-width: 75px !important;   /* 👈 ขยายความกว้างขึ้นอีกนิด เพื่อให้รับกับความสูง 80px */
+    height: 80px !important;      /* 👈 ความสูงที่คุณต้องการ */
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
 }
 
-        .cat5-img-btn img {
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 100% !important;
-            max-height: 100% !important;
-            object-fit: fill !important;
-            border-radius: 8px !important;
-        }
+.cat5-img-btn img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important; /* 👈 เปลี่ยนจาก fill เป็น contain เพื่อไม่ให้รูปถูกบีบและรักษาความโปร่งใส */
+    border-radius: 8px !important;
+    background: transparent !important; /* ป้องกันพื้นหลังติดที่ตัวรูป */
+}
 
         /* ปุ่มยาวของโหมด 1 */
         .btn-next {
