@@ -457,13 +457,18 @@ function loadQuestion() {
         `;
     });
 
-    // 🎯 สลับปุ่มควบคุมด้านล่างตามโหมด
+// 🎯 สลับปุ่มควบคุมด้านล่างตามโหมด (บังคับเช็คเงื่อนไขหมวด 1 ให้ชัดเจน)
     const nextBtn = document.getElementById('btn-next');
     const bottomBarWrapper = document.getElementById('cat5-bottom-bar-wrapper');
 
-    if (currentMode === 'study') {
-        if (nextBtn) nextBtn.style.display = 'block';
-        if (bottomBarWrapper) bottomBarWrapper.style.display = 'none';
+    if (currentMode === 'study' || currentMode === '1') {
+        // 📌 ถ้าเป็นหมวด 1 (อ่านเรียนรู้) -> แสดงปุ่ม "ต่อไป" แบบยาว และบังคับซ่อนแถบ ก ข ค ง ทันที
+        if (nextBtn) {
+            nextBtn.style.setProperty('display', 'block', 'important');
+        }
+        if (bottomBarWrapper) {
+            bottomBarWrapper.style.setProperty('display', 'none', 'important');
+        }
 
         if (currentQuestionIndex === quizQuestions.length - 1) {
             nextBtn.innerText = 'ເກັງຫລາຍ ອ່ານຈົບແລ້ວ ກົດໄປຕໍ່';
@@ -475,11 +480,16 @@ function loadQuestion() {
         nextBtn.style.opacity = '1';
         nextBtn.style.cursor = 'pointer';
     } else {
-        if (nextBtn) nextBtn.style.display = 'none';
-        if (bottomBarWrapper) bottomBarWrapper.style.display = 'flex';
+        // 📌 ถ้าเป็นโหมดอื่น (2, 3, 4) -> ซ่อนปุ่มยาว และแสดงแถบ ก ข ค ง
+        if (nextBtn) {
+            nextBtn.style.setProperty('display', 'none', 'important');
+        }
+        if (bottomBarWrapper) {
+            bottomBarWrapper.style.setProperty('display', 'flex', 'important');
+        }
         updateBottomBarState();
     }
-
+	
     saveQuizState();
 }
 
