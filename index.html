@@ -23,6 +23,52 @@
         body, button, input, select, textarea {
             font-family: 'Phetsarath', sans-serif !important;
         }
+
+        /* 🎨 บังคับขยายขนาดปุ่ม ก ข ค ง ให้ใหญ่ขึ้นจริงทุกอุปกรณ์ */
+        .cat5-bottom-bar {
+            display: flex !important;
+            justify-content: space-around !important;
+            align-items: center !important;
+            gap: 6px !important;
+            padding: 8px 10px !important;
+            background: rgba(15, 23, 42, 0.98) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 6px !important;
+            flex-shrink: 0 !important;
+        }
+
+        .cat5-img-btn {
+            background: none !important;
+            border: none !important;
+            cursor: pointer !important;
+            padding: 0 !important;
+            min-width: 65px !important;
+            width: 75px !important;
+            height: 55px !important;
+        }
+
+        .cat5-img-btn img {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            object-fit: fill !important;
+            border-radius: 8px !important;
+        }
+
+        /* ปุ่มยาวของโหมด 1 */
+        .btn-next {
+            width: 100% !important;
+            padding: 16px 14px !important;
+            font-size: 1.2rem !important;
+            font-weight: bold !important;
+            background: #0284c7 !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 10px !important;
+            cursor: pointer !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4) !important;
+        }
     </style>
     <script>
         window.addEventListener('DOMContentLoaded', () => {
@@ -46,13 +92,13 @@
         <div id="home-screen" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; overflow-y: auto;">
             
             <div style="width: 100%; max-width: 360px;">
-<div style="font-size: 1.0rem; font-weight: bold; color: #ffffff; margin-bottom: 8px; background: rgba(0, 0, 0, 0.3); padding: 6px 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
-    <span style="display: flex; align-items: center; gap: 8px;">
-        <img src="icon-192.png" alt="Logo" style="width: 26px; height: 26px; object-fit: contain; border-radius: 50%; background: #ffffff;">
-        ໂຮງຮຽນສອນຂັບລົດບ້ານສາມັກຄີ
-    </span>
-    <img onclick="teacherUnlock()" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='11' width='18' height='11' rx='2' ry='2'></rect><path d='7 11V7a5 5 0 0 1 10 0v4'></path></svg>" title="ສໍາລັບຄູສອນ" style="cursor: pointer; opacity: 0.9; width: 22px; height: 22px;">
-</div>
+                <div style="font-size: 1.0rem; font-weight: bold; color: #ffffff; margin-bottom: 8px; background: rgba(0, 0, 0, 0.3); padding: 6px 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="display: flex; align-items: center; gap: 8px;">
+                        <img src="icon-192.png" alt="Logo" style="width: 26px; height: 26px; object-fit: contain; border-radius: 50%; background: #ffffff;">
+                        ໂຮງຮຽນສອນຂັບລົດບ້ານສາມັກຄີ
+                    </span>
+                    <img onclick="teacherUnlock()" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='11' width='18' height='11' rx='2' ry='2'></rect><path d='7 11V7a5 5 0 0 1 10 0v4'></path></svg>" title="ສໍາລັບຄູສອນ" style="cursor: pointer; opacity: 0.9; width: 22px; height: 22px;">
+                </div>
                 <h1 style="font-size: 1.15rem; color: #ffffff; margin-bottom: 8px; font-weight: bold;">020-22293666,02077116687</h1>
                 
                 <div id="student-profile-box" style="margin-bottom: 10px; text-align: left; background: rgba(0,0,0,0.25); padding: 8px; border-radius: 6px;">
@@ -112,13 +158,13 @@
         <!-- 📝 หน้าจอทำข้อสอบ -->
         <div id="main-quiz-wrapper" style="display: none; flex-direction: column; width: 100%; height: 100%; justify-content: space-between;">
             <div>
-<div style="font-size: 1.0rem; font-weight: bold; color: #ffffff; margin-bottom: 8px; background: rgba(0, 0, 0, 0.3); padding: 6px 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
-    <span style="display: flex; align-items: center; gap: 8px;">
-        <img src="icon-192.png" alt="Logo" style="width: 26px; height: 26px; object-fit: contain; border-radius: 50%; background: #ffffff;">
-        ໂຮງຮຽນສອນຂັບລົດບ້ານສາມັກຄີ
-    </span>
-    <img onclick="teacherUnlock()" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='11' width='18' height='11' rx='2' ry='2'></rect><path d='7 11V7a5 5 0 0 1 10 0v4'></path></svg>" title="ສໍາລັບຄູສອນ" style="cursor: pointer; opacity: 0.9; width: 22px; height: 22px;">
-</div>
+                <div style="font-size: 1.0rem; font-weight: bold; color: #ffffff; margin-bottom: 8px; background: rgba(0, 0, 0, 0.3); padding: 6px 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="display: flex; align-items: center; gap: 8px;">
+                        <img src="icon-192.png" alt="Logo" style="width: 26px; height: 26px; object-fit: contain; border-radius: 50%; background: #ffffff;">
+                        ໂຮງຮຽນສອນຂັບລົດບ້ານສາມັກຄີ
+                    </span>
+                    <img onclick="teacherUnlock()" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='11' width='18' height='11' rx='2' ry='2'></rect><path d='7 11V7a5 5 0 0 1 10 0v4'></path></svg>" title="ສໍາລັບຄູສອນ" style="cursor: pointer; opacity: 0.9; width: 22px; height: 22px;">
+                </div>
 
                 <div style="margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
                     <div style="display: flex; align-items: center; gap: 8px;">
@@ -169,11 +215,51 @@
                 </div>
             </div>
 
+            <!-- 🎯 ปุ่มด้านล่าง: จะสลับแสดงผลอัตโนมัติตามโหมด -->
             <div style="flex-shrink: 0; padding-bottom: 8px;">
-                <button class="btn-next" id="btn-next" onclick="nextQuestion()" style="width: 100%; padding: 18px 14px; font-size: 1.2rem; font-weight: bold; background: #0284c7; color: white; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.4);">ກົດຂໍ້ຕໍ່ໄປ</button>
+                <!-- 📌 ปุ่มสำหรับโหมด 1 (ปุ่มยาวแบบเดิม) -->
+                <button class="btn-next" id="btn-next" onclick="nextQuestion()" style="display: none;">ກົດຂໍ້ຕໍ່ໄປ</button>
+
+                <!-- 📌 แถบปุ่มสำหรับโหมด 2, 3, 4 (แถบ ก ข ค ง) -->
+                <div id="cat5-bottom-bar-wrapper" class="cat5-bottom-bar" style="display: flex;">
+                    <button onclick="prevOrSubmit()" class="cat5-img-btn" title="กลับ / ส่งข้อสอบ">
+                        <img id="back-submit-img" src="back.png" alt="ກັບ" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'45\'><rect width=\'100%\' height=\'100%\' fill=\'%23dc2626\' rx=\'6\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'13\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ກັບ</text></svg>'">
+                    </button>
+                    <button onclick="selectOptionByLetter(0)" class="cat5-img-btn" title="เลือก ก">
+                        <img src="a.png" alt="ກ" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'55\' height=\'45\'><circle cx=\'27\' cy=\'22\' r=\'20\' fill=\'%23dc2626\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'14\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ກ</text></svg>'">
+                    </button>
+                    <button onclick="selectOptionByLetter(1)" class="cat5-img-btn" title="เลือก ข">
+                        <img src="b.png" alt="ຂ" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'55\' height=\'45\'><circle cx=\'27\' cy=\'22\' r=\'20\' fill=\'%23dc2626\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'14\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ຂ</text></svg>'">
+                    </button>
+                    <button onclick="selectOptionByLetter(2)" class="cat5-img-btn" title="เลือก ค">
+                        <img src="c.png" alt="ຄ" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'55\' height=\'45\'><circle cx=\'27\' cy=\'22\' r=\'20\' fill=\'%23dc2626\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'14\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ຄ</text></svg>'">
+                    </button>
+                    <button onclick="selectOptionByLetter(3)" class="cat5-img-btn" title="เลือก ง">
+                        <img src="d.png" alt="ງ" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'55\' height=\'45\'><circle cx=\'27\' cy=\'22\' r=\'20\' fill=\'%23dc2626\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'14\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ງ</text></svg>'">
+                    </button>
+                    <button onclick="nextOrSkipQuestion()" class="cat5-img-btn" title="ข้อถัดไป / ข้าม">
+                        <img src="next.png" alt="ຂ້າມ" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'45\'><rect width=\'100%\' height=\'100%\' fill=\'%230284c7\' rx=\'6\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'13\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ຂ້າມ</text></svg>'">
+                    </button>
+                </div>
             </div>
         </div>
 
+    </div>
+
+    <!-- 🔐 หน้าต่างใส่รหัสผ่านแบบกำหนดเอง (พื้นหลังช่องกรอกสีขาว ตัวหนังสือสีดำ เห็นชัดเจนแน่นอน) -->
+    <div id="custom-password-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="background: #1e293b; padding: 20px; border-radius: 12px; width: 90%; max-width: 320px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 2px solid #38bdf8;">
+            <h3 style="color: #ffffff; margin-bottom: 12px; font-size: 1.1rem;">🔐 ໂໝດສຳລັບຄູສອນ</h3>
+            <p style="color: #cbd5e1; font-size: 0.85rem; margin-bottom: 12px;">ກະລຸນາໃສ່ລະຫັດຜ່ານ:</p>
+            
+            <!-- ช่องกรอกรหัส: พื้นหลังสีขาว (#ffffff) ตัวหนังสือสีดำ (#000000) -->
+            <input type="password" id="custom-password-input" placeholder="ໃສ່ລະຫັດຜ່ານ..." style="width: 100%; box-sizing: border-box; padding: 10px; font-size: 1rem; border-radius: 6px; border: 2px solid #38bdf8; background-color: #FFFFFF !important; color: #000000 !important; outline: none; font-weight: bold; text-align: center; margin-bottom: 15px;">
+            
+            <div style="display: flex; gap: 8px;">
+                <button onclick="closePasswordModal()" style="flex: 1; padding: 10px; font-weight: bold; background: #64748b; color: white; border: none; border-radius: 6px; cursor: pointer;">ຍົກເລີກ</button>
+                <button onclick="submitPasswordModal()" style="flex: 1; padding: 10px; font-weight: bold; background: #0284c7; color: white; border: none; border-radius: 6px; cursor: pointer;">ຕົກລົງ</button>
+            </div>
+        </div>
     </div>
 
     <script src="app.js"></script>

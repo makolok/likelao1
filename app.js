@@ -58,7 +58,6 @@ window.addEventListener('DOMContentLoaded', () => {
     processOfflineQueue();
 });
 
-// 🔄 อัปเดตสถานะและจำนวนข้อผิดทันทีเมื่อกดกลับมาจากหมวดอื่นโดยไม่รีเฟรช
 window.addEventListener('pageshow', (event) => {
     checkHomeUnlockStatus();
 });
@@ -227,7 +226,6 @@ function checkHomeUnlockStatus() {
         }
     }
 
-    // 🔓 หมวด 4: ปลดล็อกถาวรตั้งแต่เริ่ม เปิดใช้งานได้ตลอด
     if (btn4) {
         btn4.style.background = '#dc2626';
         btn4.style.color = '#ffffff';
@@ -357,7 +355,6 @@ async function fetchQuestions(filename, isRestoring = false) {
             } else {
                 document.getElementById('question-text').innerText = 'ບໍ່ມີຂໍ້ສອບ';
             }
-            document.getElementById('btn-next').style.display = 'none';
         }
     } catch (error) {
         console.error(error);
@@ -425,7 +422,6 @@ function loadQuestion() {
     if (quizQuestions.length === 0) return;
     document.getElementById('result-screen').style.display = 'none';
     document.getElementById('quiz-screen').style.display = 'flex';
-    document.getElementById('btn-next').style.display = 'block';
 
     const q = quizQuestions[currentQuestionIndex];
     isAnswered = (currentMode === 'study') ? true : (userAnswers[currentQuestionIndex] !== undefined);
@@ -461,23 +457,36 @@ function loadQuestion() {
         `;
     });
 
+    // 🎯 สลับปุ่มควบคุมด้านล่างตามโหมด
     const nextBtn = document.getElementById('btn-next');
-    if (currentQuestionIndex === quizQuestions.length - 1) {
-        nextBtn.innerText = (currentMode === 'study') ? 'ເກັງຫລາຍ ອ່ານຈົບແລ້ວ ກົດໄປຕໍ່' : 'ສົ່ງຂໍ້ສອບ';
-        nextBtn.className = 'btn-submit';
-    } else {
-        nextBtn.innerText = 'ຕໍ່ໄປ';
-        nextBtn.className = 'btn-next';
-    }
+    const bottomBarWrapper = document.getElementById('cat5-bottom-bar-wrapper');
 
-    if (currentMode !== 'study' && !isAnswered) {
-        nextBtn.style.opacity = '0.5';
-        nextBtn.style.cursor = 'not-allowed';
-    } else {
+    if (currentMode === 'study') {
+        if (nextBtn) nextBtn.style.display = 'block';
+        if (bottomBarWrapper) bottomBarWrapper.style.display = 'none';
+
+        if (currentQuestionIndex === quizQuestions.length - 1) {
+            nextBtn.innerText = 'ເກັງຫລາຍ ອ່ານຈົບແລ້ວ ກົດໄປຕໍ່';
+            nextBtn.className = 'btn-submit';
+        } else {
+            nextBtn.innerText = 'ຕໍ່ໄປ';
+            nextBtn.className = 'btn-next';
+        }
         nextBtn.style.opacity = '1';
         nextBtn.style.cursor = 'pointer';
+    } else {
+        if (nextBtn) nextBtn.style.display = 'none';
+        if (bottomBarWrapper) bottomBarWrapper.style.display = 'flex';
+        updateBottomBarState();
     }
+
     saveQuizState();
+}
+
+function selectOptionByLetter(index) {
+    if (currentMode === 'study') return;
+    if (isAnswered) return;
+    selectOption(index);
 }
 
 function selectOption(index) {
@@ -518,8 +527,43 @@ function updateLiveScore() {
 }
 
 function nextQuestion() {
+    if (currentQuestionIndex < quizQuestions.length - 1) {
+        currentQuestionIndex++;
+        saveQuizState();
+        loadQuestion();
+    } else {
+        finishExamOrNext();
+    }
+}
+
+function prevOrSubmit() {
+    const answeredCount = Object.keys(userAnswers).length;
+    const isCompleted = answeredCount >= quizQuestions.length;
+
+    if (isCompleted || currentQuestionIndex === quizQuestions.length - 1) {
+        finishExamOrNext();
+    } else {
+        prevQuestion();
+    }
+}
+
+function prevQuestion() {
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        saveQuizState();
+        loadQuestion();
+    }
+}
+
+function nextOrSkipQuestion() {
     if (currentMode !== 'study' && !isAnswered) {
-        alert('ກະລຸນາເລືອກຄຳຕອບກ່ອນກົດໄປຂໍ້ຖັດໄປ!');
+        if (currentQuestionIndex < quizQuestions.length - 1) {
+            currentQuestionIndex++;
+            saveQuizState();
+            loadQuestion();
+        } else {
+            finishExamOrNext();
+        }
         return;
     }
 
@@ -528,29 +572,54 @@ function nextQuestion() {
         saveQuizState();
         loadQuestion();
     } else {
-        localStorage.removeItem('lao_quiz_state_' + currentMode + '_' + currentCategoryFile);
+        finishExamOrNext();
+    }
+}
 
-        if (currentMode === 'study') {
-            localStorage.setItem(`lao_quiz_study_passed_${currentCategoryFile}`, 'true');
-            checkHomeUnlockStatus();
-            showStudyCompleteScreen();
-        } else if (currentMode === 'quiz') {
-            localStorage.setItem(`lao_quiz_quiz_passed_${currentCategoryFile}`, 'true');
-            checkHomeUnlockStatus();
-            showResults();
-        } else if (currentMode === 'random') {
-            localStorage.setItem(`lao_quiz_random_passed_${currentCategoryFile}`, 'true');
-            checkHomeUnlockStatus();
-            showResults();
-        } else if (currentMode === 'review_wrong') {
-            let remainingWrong = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + currentCategoryFile)) || [];
-            if (remainingWrong.length > 0) {
-                alert(`⚠️ ຍັງມີຂໍ້ທີ່ຕອບຜິດຄ້າງຢູ່ ${remainingWrong.length} ຂໍ້!`);
-                startApp('review_wrong'); 
-            } else {
-                showReviewWrongCompleteScreen(); 
-            }
+function finishExamOrNext() {
+    localStorage.removeItem('lao_quiz_state_' + currentMode + '_' + currentCategoryFile);
+
+    if (currentMode === 'study') {
+        localStorage.setItem(`lao_quiz_study_passed_${currentCategoryFile}`, 'true');
+        checkHomeUnlockStatus();
+        showStudyCompleteScreen();
+    } else if (currentMode === 'quiz') {
+        localStorage.setItem(`lao_quiz_quiz_passed_${currentCategoryFile}`, 'true');
+        checkHomeUnlockStatus();
+        showResults();
+    } else if (currentMode === 'random') {
+        localStorage.setItem(`lao_quiz_random_passed_${currentCategoryFile}`, 'true');
+        checkHomeUnlockStatus();
+        showResults();
+    } else if (currentMode === 'review_wrong') {
+        let remainingWrong = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + currentCategoryFile)) || [];
+        if (remainingWrong.length > 0) {
+            alert(`⚠️ ຍັງມີຂໍ້ທີ່ຕອບຜິດຄ້າງຢູ່ ${remainingWrong.length} ຂໍ້!`);
+            startApp('review_wrong'); 
+        } else {
+            showReviewWrongCompleteScreen(); 
         }
+    }
+}
+
+function updateBottomBarState() {
+    const answeredCount = Object.keys(userAnswers).length;
+    const isCompleted = answeredCount >= quizQuestions.length || currentQuestionIndex === quizQuestions.length - 1;
+    const btnImg = document.getElementById('back-submit-img');
+    if (!btnImg) return;
+
+    if (isCompleted) {
+        btnImg.src = 'send.png';
+        btnImg.onerror = function() {
+            this.onerror = null;
+            this.src = 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'45\'><rect width=\'100%\' height=\'100%\' fill=\'%2315803d\' rx=\'6\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'13\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ສົ່ງ</text></svg>';
+        };
+    } else {
+        btnImg.src = 'back.png';
+        btnImg.onerror = function() {
+            this.onerror = null;
+            this.src = 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'45\'><rect width=\'100%\' height=\'100%\' fill=\'%23dc2626\' rx=\'6\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'13\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ກັບ</text></svg>';
+        };
     }
 }
 
@@ -604,7 +673,6 @@ function showResults() {
     `;
 }
 
-// 🔓 ฟังก์ชันดักเช็คเปิด/ล็อก หมวด 5 ป้องกันการกดเข้าถ้ายังไม่ผ่านหมวด 2
 function openCategory5() {
     const nameInput = document.getElementById('studentName');
     const ageInput = document.getElementById('studentAge');
